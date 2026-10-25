@@ -1,5 +1,7 @@
 # Validação e limites da versão atual
 
+**Português (Brasil)** | [English](en/validation.md) · [Início](../README.md)
+
 Ambiente testado: TCL C6K BR/G15, Android 14, V8-0016T01-LF1V048, TTVSCore 10.58.16 e SmartAlexa 6.13.25. O [relatório da 0.4.0](qa-v0.4.0.md) identifica o APK final, as provas do novo assistente e os limites de cobertura.
 
 O APK final preservou vínculo na atualização, renovou tokens nativamente e passou por três ciclos de renovação/pausa/retomada, limpeza HTTP/Rx sem erro reportado, rebind do executor, reconexão do socket e dois volumes com efeito real/ACK, restaurando o nível original. DEX/manifest do build público, assinatura, produção sem depuração e licença BSD foram conferidos.
@@ -30,3 +32,14 @@ Registre modelo, firmware e versões dos três pacotes. Depois confira:
 8. Desativação das opções de energia e restauração do estado anterior.
 
 Separe o que foi visto na tela, o que foi executado por voz e o que é apenas telemetria. Sem teste positivo de hardware e frase correspondente, classifique como condicionado ou inconclusivo. Não publique tokens, IDs, MACs, perfis ou logs TCL brutos em issues.
+
+## Diagnóstico resumido
+
+Em um computador com acesso ADB autorizado na TV, execute na raiz do repositório:
+
+```sh
+mkdir -p .private
+./scripts/diagnostics.sh IP_DA_TV:5555 > .private/diagnostics.txt
+```
+
+Esse resumo evita o logcat TCL bruto, que pode conter dados de autenticação. Revise antes de compartilhar. Informe modelo, região, firmware, versões dos pacotes, comando/frase usados e o efeito observado; omita identificadores privados e credenciais.

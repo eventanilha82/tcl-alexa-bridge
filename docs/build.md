@@ -1,5 +1,7 @@
 # Compilar do zero
 
+**Português (Brasil)** | [English](en/build.md) · [Início](../README.md)
+
 Para usar a ponte, você pode instalar o APK pronto pelo [guia da TV](setup.md). Este guia é para quem quer gerar seu próprio APK e revisar o código.
 
 O projeto usa Java/Android diretamente, sem Gradle ou Android Studio obrigatório. Você precisa de Git, Bash, Python 3, um JDK com `java`, `javac`, `jar` e `keytool`, e Android SDK. O ambiente de desenvolvimento foi validado com JDK 27, Platform 34 e Build Tools 36.0.0. O APK exige Android API 34; a compatibilidade de hardware continua limitada ao ambiente documentado no README.

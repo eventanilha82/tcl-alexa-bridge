@@ -1,5 +1,7 @@
 # Verificação da versão 0.4.0
 
+**Português (Brasil)** | [English](en/qa-v0.4.0.md) · [Início](../README.md)
+
 APK de produção: `TCL-Alexa-Bridge-0.4.0.apk`, **82462 bytes**, SHA256:
 
 ```text

@@ -1,5 +1,7 @@
 # Revisão técnica da versão atual
 
+**Português (Brasil)** | [English](en/review.md) · [Início](../README.md)
+
 A revisão foi dividida entre runtime/Binder/ciclo de vida e onboarding/portabilidade/distribuição. Este documento descreve as correções presentes e seus limites; os resultados executados estão no [relatório da 0.4.0](qa-v0.4.0.md).
 
 | Área | Correção ou proteção |

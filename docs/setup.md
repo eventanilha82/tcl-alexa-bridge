@@ -1,5 +1,7 @@
 # Configuração na TV — 0.4.0
 
+**Português (Brasil)** | [English](en/setup.md) · [Início](../README.md)
+
 O assistente usa o controle remoto da TV. O celular é usado para o vínculo no aplicativo Alexa. Não é necessário montar um perfil JSON nem executar comandos num computador no fluxo validado.
 
 A combinação testada é TCL C6K/G15 BR, Android 14, firmware V8-0016T01-LF1V048, TTVSCore 10.58.16 e SmartAlexa 6.13.25. A TV deve estar configurada para Brasil e conectada ao Wi-Fi. O assistente depende de ADB local na porta 5555, disponível no firmware testado. Outras combinações podem exigir adaptação.

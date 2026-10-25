@@ -1,5 +1,7 @@
 # Pausa, recuperação e restauração
 
+**Português (Brasil)** | [English](en/rollback.md) · [Início](../README.md)
+
 ## Vínculo e atualização
 
 - Pausar na interface mantém o vínculo. Uma renovação em voo precisa terminar antes de iniciar outra sessão, para não perder tokens rotacionados.

@@ -1,5 +1,7 @@
 # Arquitetura e dependências — 0.4.0
 
+**Português (Brasil)** | [English](en/architecture.md) · [Início](../README.md)
+
 ```text
 Preparação pelo controle remoto
     → autorização Android → ADB em 127.0.0.1:5555

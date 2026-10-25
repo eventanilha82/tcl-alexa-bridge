@@ -1,5 +1,7 @@
 # Componentes externos e proveniência
 
+**Português (Brasil)** | [English](docs/en/third-party-notices.md) · [Início](README.md)
+
 A licença MIT deste repositório cobre somente o código próprio da TCL Alexa Bridge. TCL, SmartAlexa, TTVSCore, Alexa e marcas relacionadas pertencem aos respectivos titulares. O projeto é comunitário e não declara afiliação, autorização comercial ou certificação Works with Alexa.
 
 ## SmartAlexa: APK proprietário separado
