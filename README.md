@@ -2,6 +2,8 @@
 
 Ponte comunitária para manter o vínculo Alexa em uma TCL C6K brasileira, usando o TTVSCore e o SmartAlexa **já instalados na TV**. O aplicativo cuida de vínculo, sessão, persistência, inicialização, recuperação e despertar. O SmartAlexa executa os controles. Não é um substituto independente nem uma certificação Works with Alexa.
 
+**Instalação da versão 0.3.4:** o Downloader instala os APKs; a configuração inicial ainda exige um computador com ADB e o perfil real da TV. A geração do código e o armazenamento/renovação de tokens ficam no app. O assistente completo de instalação na TV ainda não está implementado.
+
 ## Compatibilidade comprovada
 
 TCL C6K/G15 brasileira, Android 14 (API 34), firmware V8-0016T01-LF1V048, TTVSCore 10.58.16 e SmartAlexa 6.13.25. Outras combinações precisam de validação. O código carrega interfaces internas da TCL: uma atualização pode exigir adaptação. O `applicationId` é fixo em `local.tclbridge` porque o mapeamento do armazenamento nativo depende do comprimento do caminho.
