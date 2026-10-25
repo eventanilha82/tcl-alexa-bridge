@@ -1,11 +1,32 @@
-# Validação e limites
+# Validação e limites da versão atual
 
-Ambiente inicial validado: C6K BR / G15, Android 14, V8-0016T01-LF1V048, TTVSCore 10.58.16, SmartAlexa 6.13.25.
+Ambiente testado: TCL C6K BR/G15, Android 14, V8-0016T01-LF1V048, TTVSCore 10.58.16 e SmartAlexa 6.13.25. O [relatório da 0.4.0](qa-v0.4.0.md) identifica o APK final, as provas do novo assistente e os limites de cobertura.
 
-Na implementação da ponte foram observados: volume e mudo, HDMI1–4/TV, abertura YouTube/Netflix, navegação, registro de retornos nativos, retorno de canal inexistente como falha, renovação de token, reconexão de socket, queda/rebind do executor, boot sem abrir a interface e despertar por UDP. O usuário confirmou volume, desligar e ligar por Echo na etapa anterior. Em 25/10/2026, o APK exato da release foi instalado e passou pela regressão de renovação, pausa, reconexão, comando real e reinício. O usuário confirmou volume, desligar e ligar pelo Echo após um minuto em espera. Veja o [relatório da release 0.3.4](qa-v0.3.4.md). Esta versão continua experimental para outras combinações de TV/firmware.
+O APK final preservou vínculo na atualização, renovou tokens nativamente e passou por três ciclos de renovação/pausa/retomada, limpeza HTTP/Rx sem erro reportado, rebind do executor, reconexão do socket e dois volumes com efeito real/ACK, restaurando o nível original. DEX/manifest do build público, assinatura, produção sem depuração e licença BSD foram conferidos.
 
-As 11 famílias de `msg_type` do executor analisado são 3,4,5,6,7,8,9,11,15,16,17. Cobertura de despacho não é prova de todos os efeitos. No player TCL, seek/retrocesso/avanço/reinício alteraram a posição e Stop removeu a sessão; Pause apresentou telemetria de estado inconsistente, apesar do retorno nativo de sucesso. Próximo/anterior numa playlist de um único item não comprovam troca. Não houve canal sintonizado para teste positivo nem gravação real.
+A primeira configuração foi exercitada em instalação isolada: autorização local, coleta da identidade TCL real sem perfil importado, início sem credenciais, registro nativo, código, confirmação do vínculo, renovação, conexão e persistência. O reinício passou sem abrir a interface: serviço, conta, nuvem, executor e persistência recuperados, com os ajustes de energia mantidos. O ciclo automático de 60 segundos em standby passou: desligamento nativo com ACK, tela em espera, nuvem/executor ativos e despertar por UDP sem abrir a interface. Voz pelo Echo na 0.4.0 ainda não foi confirmada nesta rodada; a confirmação anterior é histórica. Instalador com SmartAlexa ausente, nova confirmação de skill numa conta inteiramente nova, restauração de energia pela interface e uma noite inteira em espera não foram exercitados nesta rodada; são limites da cobertura, não falhas observadas.
 
-Para validar outra TV, registre: pacotes e versões, boot, app fechado, volume/mudo, entradas reais, mídia em cada player, rede indisponível/retorno, queda do executor, renovação durante pausa, standby curto e uma noite em espera. Nunca publique credenciais nem o perfil da TV.
+A evolução anterior da ponte teve resultados positivos de volume e mudo, HDMI1–4/TV, YouTube/Netflix, navegação, pausa/retomada, renovação, reconexão, rebind, boot sem abrir a interface e despertar. O usuário confirmou volume, desligar e ligar pelo Echo em teste anterior. Mantemos esse contexto como histórico de implementação, sem atribuí-lo automaticamente à versão atual.
 
-Sem teste positivo de hardware e frase de voz correspondente, classifique o item como condicionado/inconclusivo. Não alegue 100% de paridade ou estabilidade prolongada só com ACKs.
+## O que um retorno comprova
+
+As 11 famílias de `msg_type` analisadas no executor são 3,4,5,6,7,8,9,11,15,16,17. A ponte encaminha o protocolo nativo; isso não garante que todo recurso exista em todo modelo ou aplicativo. As métricas contam encaminhamentos ao executor e seus retornos. Um ACK de sucesso não comprova sozinho o efeito observado no conteúdo, player ou periférico.
+
+Em testes anteriores do player TCL, seek/retrocesso/avanço/reinício alteraram posição e Stop removeu a sessão. Pause apresentou telemetria inconsistente apesar de retorno nativo de sucesso. Próximo/anterior em playlist de um único item não comprovam troca. Não houve canal sintonizado para teste positivo nem gravação real. PVR e canais precisam de validação no aparelho com os recursos disponíveis.
+
+Existe uma janela nativa de `BINDING` em que mensagens podem ser descartadas antes de chegar à ponte. Não fazemos reenvio indiscriminado, pois isso pode duplicar ações. Uma interrupção abrupta durante renovação também depende do estado do backend TCL.
+
+## Como validar sua instalação
+
+Registre modelo, firmware e versões dos três pacotes. Depois confira:
+
+1. Preparação pelo controle remoto, código e vínculo sem importar credenciais.
+2. Controle por voz usando o nome exato da TV, com a interface fechada.
+3. Volume/mudo, entradas disponíveis e apps realmente instalados.
+4. Reprodução, pausa, busca e navegação em cada player usado.
+5. Perda/retorno de rede e recuperação do executor.
+6. Pausa/retomada e renovação sem perder vínculo.
+7. Reinício sem abrir o app, standby curto e uma noite em espera.
+8. Desativação das opções de energia e restauração do estado anterior.
+
+Separe o que foi visto na tela, o que foi executado por voz e o que é apenas telemetria. Sem teste positivo de hardware e frase correspondente, classifique como condicionado ou inconclusivo. Não publique tokens, IDs, MACs, perfis ou logs TCL brutos em issues.

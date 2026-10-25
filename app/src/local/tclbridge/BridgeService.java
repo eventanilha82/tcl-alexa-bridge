@@ -27,7 +27,7 @@ public class BridgeService extends Service {
   volatile long drainStarted;Intent afterDrain;int latestStartId;String drainError="";
   volatile JSONObject credentials;WakeSupport wakeSupport;PowerManager.WakeLock wake;
   boolean waitingCode=false;long codeExpiresAt=0,lastLinkCheck=0,nextInit=0;
-  String powerError="";volatile String configurationError="";
+  String powerError="";volatile String configurationError="",setupError="";
   volatile long disconnectedSince=0,lastRecovery=0;long lastExecutorCheck;volatile long generation;ConnectivityManager.NetworkCallback networkCallback;
   String savedCredentials="";String lastEngineState="";
 
@@ -56,7 +56,7 @@ public class BridgeService extends Service {
   }
   void dispatchAction(Intent intent,String action){
     if("RECOVER".equals(action))event("Inicialização automática: "+intent.getStringExtra("reason"));
-    if("LINK".equals(action))net.execute(()->startLink());
+    if("LINK".equals(action)||"RESUME_LINK".equals(action)){setupError="";writeState();net.execute(()->startLink("RESUME_LINK".equals(action)));}
     if("RECONNECT".equals(action))main.post(()->{try{if(core!=null&&!draining){core.refresh();event("Renovação solicitada ao TTVSCore");}else nextInit=0;}catch(Exception e){event("Reconexão TCL: "+root(e).getClass().getSimpleName());}});
     if("SELF_TEST".equals(action))testVolume();
     if("NATIVE_STATUS".equals(action))new TtvsProbe(this,text->event(text)).start();
@@ -71,7 +71,7 @@ public class BridgeService extends Service {
     net.execute(()->{try{JSONObject profile=RegistryClient.profile(this);main.post(()->{try{if(alive&&!draining&&expectedGeneration==generation&&wakeSupport==candidate&&getSharedPreferences("bridge",0).getBoolean("enabled",false))candidate.start(profile);}finally{wakeStarting=false;}});}catch(Exception e){wakeStarting=false;configurationError=e.getMessage()==null?"Configure o perfil desta TV":e.getMessage();event("Perfil da TV pendente de configuração");}});
   }
   void requestPause(){
-    getSharedPreferences("bridge",0).edit().putBoolean("enabled",false).apply();generation++;resumeRequested=false;afterDrain=null;
+    getSharedPreferences("bridge",0).edit().putBoolean("enabled",false).apply();generation++;activationRequestPending=false;resumeRequested=false;afterDrain=null;
     if(!draining){draining=true;drainStarted=SystemClock.elapsedRealtime();drainUncertain=false;drainError="";event("Controle pausado; aguardando operações de autenticação em andamento");}
     EmbeddedCore active=core;if(active!=null)active.quiesce();if(wakeSupport!=null)wakeSupport.stop();writeState();
   }
@@ -89,7 +89,7 @@ public class BridgeService extends Service {
   void finishDrain(EmbeddedCore retiring){
     if(!alive||!draining||core!=retiring){drainFinalizing=false;return;}
     if(retiring!=null&&retiring.pendingSubscriptions()!=0){drainFinalizing=false;return;}
-    if(retiring!=null)retiring.stop();core=null;initializing=false;drainFinalizing=false;draining=false;drainUncertain=false;drainStarted=0;
+    if(retiring!=null)retiring.stop();core=null;activationRequestPending=false;initializing=false;drainFinalizing=false;draining=false;drainUncertain=false;drainStarted=0;
     boolean resume=resumeRequested&&getSharedPreferences("bridge",0).getBoolean("enabled",false);Intent next=afterDrain;resumeRequested=false;afterDrain=null;
     event("Estado da conta salvo após a pausa");writeState();
     if(resume){nextInit=0;lastLinkCheck=0;disconnectedSince=0;lastEngineState="";ensureWakeSupport();event("Retomando com o estado privado atualizado");dispatchAction(next,next==null?"START":next.getAction());}
@@ -115,7 +115,7 @@ public class BridgeService extends Service {
     }
   }
   void saveCredentials()throws Exception{
-    if(credentials==null)return;String data=credentials.toString();if(data.equals(savedCredentials))return;
+    if(credentials==null||credentials.optString("uuid").isEmpty()||credentials.optString("access_token").isEmpty()||credentials.optString("refresh_token").isEmpty())return;String data=credentials.toString();if(data.equals(savedCredentials))return;
     File temp=new File(getFilesDir(),"credentials.tmp"),file=new File(getFilesDir(),"credentials.json");
     try(FileOutputStream out=new FileOutputStream(temp)){out.write(data.getBytes(StandardCharsets.UTF_8));out.getFD().sync();}
     if(!temp.renameTo(file))throw new IOException("Cannot persist credentials");savedCredentials=data;
@@ -125,8 +125,8 @@ public class BridgeService extends Service {
     try{
       EmbeddedCore active=core;
       if(active!=null){active.installWakeAdapter(wakeSupport);
-        if(!active.executorConnected()&&SystemClock.elapsedRealtime()-lastExecutorCheck>5000){lastExecutorCheck=SystemClock.elapsedRealtime();main.post(()->{try{if(core==active)active.recoverExecutor();}catch(Exception e){event("Executor SmartAlexa: "+root(e).getClass().getSimpleName());}});}credentials=active.credentials();saveCredentials();
-        if(active.connected())disconnectedSince=0;else{if(disconnectedSince==0)disconnectedSince=SystemClock.elapsedRealtime();if(SystemClock.elapsedRealtime()-disconnectedSince>30000&&SystemClock.elapsedRealtime()-lastRecovery>30000)main.post(()->recoverSocket());}
+        if(!active.executorConnected()&&SystemClock.elapsedRealtime()-lastExecutorCheck>5000){lastExecutorCheck=SystemClock.elapsedRealtime();main.post(()->{try{if(core==active)active.recoverExecutor();}catch(Exception e){event("Executor SmartAlexa: "+root(e).getClass().getSimpleName());}});}JSONObject snapshot=active.credentials();if(!snapshot.optString("uuid").isEmpty()&&!snapshot.optString("access_token").isEmpty()&&!snapshot.optString("refresh_token").isEmpty()){credentials=snapshot;saveCredentials();}linked=active.accountLinked();if(linked&&waitingCode){waitingCode=false;new File(getFilesDir(),"link-code.json").delete();}
+        if(active.connected())disconnectedSince=0;else{if(disconnectedSince==0)disconnectedSince=SystemClock.elapsedRealtime();if(linked&&SystemClock.elapsedRealtime()-disconnectedSince>30000&&SystemClock.elapsedRealtime()-lastRecovery>30000)main.post(()->recoverSocket());}
         String status=active.connected()+":"+active.executorConnected()+":"+active.persisted();
         if(!status.equals(lastEngineState)){lastEngineState=status;event("TTVSCore: nuvem="+active.connected()+", executor TCL="+active.executorConnected()+", estado salvo="+active.persisted());}
         writeState();return;
@@ -136,7 +136,8 @@ public class BridgeService extends Service {
       if(linked&&!draining&&!initializing&&System.currentTimeMillis()>=nextInit){
         initializing=true;long expectedGeneration=generation;
         // Prepare the runtime copy off the UI thread.
-        CoreArchive.prepare(this,getPackageManager().getApplicationInfo("com.tcl.ttvs",0).sourceDir);
+        EmbeddedCore.awaitResourceCleanup();
+      CoreArchive.prepare(this,getPackageManager().getApplicationInfo("com.tcl.ttvs",0).sourceDir);
         JSONObject tokenCopy=new JSONObject(credentials.toString()),profile=RegistryClient.profile(this);configurationError="";
         main.post(()->{
           if(!alive||draining||!getSharedPreferences("bridge",0).getBoolean("enabled",false)||expectedGeneration!=generation){initializing=false;return;}
@@ -162,13 +163,49 @@ public class BridgeService extends Service {
   void storeRegistration(JSONObject result)throws Exception{
     requireSuccess(result);configurationError="";credentials=new JSONObject().put("uuid",result.getString("uuid")).put("access_token",result.getString("access_token")).put("refresh_token",result.getString("refresh_token")).put("expires_at",System.currentTimeMillis()/1000+result.optLong("expires_in",3600));saveCredentials();
   }
-  void startLink(){try{
-    readCredentials();if(credentials==null){storeRegistration(post("/api/v1/device",RegistryClient.registration(this,"")));event("TV registrada na TCL");}
-    checkLink();if(linked){event("Conta Alexa já vinculada a esta TV");writeState();return;}
-    JSONObject result=post("/api/v1/oauth/code",new JSONObject().put("uuid",credentials.getString("uuid")).put("access_token",credentials.getString("access_token")).put("version_number",1));requireSuccess(result);
-    codeExpiresAt=System.currentTimeMillis()/1000+result.optLong("expires_in",180);waitingCode=true;
-    writeJson("link-code.json",new JSONObject().put("code",result.getString("code")).put("expires_at",codeExpiresAt));event("Código de ativação disponível na tela");writeState();
-  }catch(Exception e){event("Não foi possível gerar o código: "+e.getMessage());}}
+  volatile boolean activationRequestPending;
+  void startLink(boolean resumeOnly){
+    if(activationRequestPending&&(core==null||core.pendingSubscriptions()>0))return;
+    activationRequestPending=true;setupError="";writeState();
+    try{
+      EmbeddedCore current=core;
+      if(current!=null){
+        if(resumeOnly){activationRequestPending=false;return;}
+        if(current.accountLinked()){activationRequestPending=false;linked=true;event("Conta Alexa já vinculada a esta TV");writeState();return;}
+        main.post(()->{try{if(alive&&!draining&&core==current)current.requestActivation();}catch(Exception e){activationRequestPending=false;setupError="A TCL não conseguiu gerar o código. Tente novamente.";writeState();}});return;
+      }
+      if(initializing){activationRequestPending=false;return;}
+      initializing=true;long expectedGeneration=generation;readCredentials();
+      EmbeddedCore.awaitResourceCleanup();
+      CoreArchive.prepare(this,getPackageManager().getApplicationInfo("com.tcl.ttvs",0).sourceDir);
+      JSONObject profile=RegistryClient.profile(this),initial=credentials==null?null:new JSONObject(credentials.toString());configurationError="";
+      long resumeExpiry=0;if(resumeOnly)try{JSONObject code=new JSONObject(new String(Files.readAllBytes(new File(getFilesDir(),"link-code.json").toPath()),StandardCharsets.UTF_8));resumeExpiry=code.getLong("expires_at");}catch(Exception ignored){}final long restoredExpiry=resumeExpiry;
+      main.post(()->{
+        if(!alive||draining||expectedGeneration!=generation){initializing=false;activationRequestPending=false;return;}
+        EmbeddedCore candidate=new EmbeddedCore(this,text->event(text));
+        try{candidate.startActivation(initial,profile,(type,value)->nativeActivation(candidate,type,value),restoredExpiry);core=candidate;activationRequestPending=!resumeOnly;event(resumeOnly?"Vínculo em andamento retomado pelo núcleo TCL":"Registro e código delegados ao núcleo TCL original");}
+        catch(Exception|LinkageError e){candidate.stop();activationRequestPending=false;setupError="O núcleo TCL não conseguiu iniciar o vínculo nesta TV.";event(setupError);}
+        finally{initializing=false;writeState();}
+      });
+    }catch(Exception e){initializing=false;activationRequestPending=false;setupError="Não foi possível preparar o vínculo. Revise a configuração da TV e tente novamente.";event(setupError);writeState();}
+  }
+  void nativeActivation(EmbeddedCore source,int type,String value){
+    if(!alive||draining)return;
+    try{net.execute(()->{if(!alive||draining||core!=source)return;
+      try{
+        if(type==33){activationRequestPending=false;
+          if(value!=null&&value.matches("[0-9]{6}")){
+            setupError="";codeExpiresAt=source.activationExpiresAt>System.currentTimeMillis()/1000?source.activationExpiresAt:System.currentTimeMillis()/1000+180;waitingCode=true;
+            writeJson("link-code.json",new JSONObject().put("code",value).put("expires_at",codeExpiresAt));event("Código de ativação recebido do núcleo TCL");
+          }else{setupError="A TCL não forneceu um código. Confira a rede e tente novamente.";event(setupError);}
+        }
+        if(type==34){waitingCode=false;new File(getFilesDir(),"link-code.json").delete();event("Código expirado. Gere outro para continuar.");}
+        if(type==400){linked=true;waitingCode=false;new File(getFilesDir(),"link-code.json").delete();event("Vínculo confirmado pelo núcleo TCL");}
+        if(type==1000){activationRequestPending=false;setupError="O registro TCL não foi concluído. Confira a rede e tente novamente.";event(setupError);}
+        writeState();
+      }catch(Exception e){activationRequestPending=false;setupError="Não foi possível salvar o estado do vínculo.";event(setupError);writeState();}
+    });}catch(RejectedExecutionException ignored){}
+  }
   void checkLink()throws Exception{
     JSONObject profile=RegistryClient.profile(this);configurationError="";JSONObject result=post("/api/v1/oauth/avgState",new JSONObject().put("deviceId",profile.getString("device_id")).put("mac",profile.getString("mac")));requireSuccess(result);
     boolean previous=linked;linked="enable".equalsIgnoreCase(result.optString("avg_status"));lastLinkCheck=System.currentTimeMillis();
@@ -184,6 +221,7 @@ public class BridgeService extends Service {
   void logout(){try{readCredentials();if(credentials==null)return;
     JSONObject result=post("/api/v1/device/signoutWithRemove",new JSONObject().put("access_token",credentials.getString("access_token")).put("version_number",1));requireSuccess(result);
     generation++;draining=false;resumeRequested=false;afterDrain=null;EmbeddedCore old=core;core=null;if(old!=null){CountDownLatch stopped=new CountDownLatch(1);main.post(()->{try{old.stop();}finally{stopped.countDown();}});if(!stopped.await(5,TimeUnit.SECONDS))throw new IOException("Executor ainda encerrando");}credentials=null;savedCredentials="";linked=false;waitingCode=false;lastLinkCheck=0;
+    getSharedPreferences("bridge",0).edit().remove("setup_complete").commit();
     new File(getFilesDir(),"credentials.json").delete();new File(getFilesDir(),"aa/.alexa.db").delete();new File(getFilesDir(),"link-code.json").delete();event("Conta desvinculada pela TCL");writeState();
   }catch(Exception e){event("Desvincular: "+e.getMessage());}}
   void testVolume(){try{if(core==null||draining){event("Aguarde o motor TCL conectar");return;}core.testVolume();event("Teste de volume enviado ao motor original TCL");}catch(Exception e){event("Teste TCL: "+root(e).getClass().getSimpleName());}}
@@ -196,7 +234,7 @@ public class BridgeService extends Service {
   void recoverSocket(){if(draining||core==null||core.connected())return;lastRecovery=SystemClock.elapsedRealtime();try{core.reconnect();event("Recuperação automática da conexão TCL");}catch(Exception e){event("Recuperação TCL: "+root(e).getClass().getSimpleName());}}
   @Override public void onTaskRemoved(Intent intent){RecoveryJob.schedule(this);event("Tela fechada; controle permanece em segundo plano");}
   void writeJson(String name,JSONObject value)throws Exception{File temp=new File(getFilesDir(),name+".tmp"),target=new File(getFilesDir(),name);try(FileOutputStream out=new FileOutputStream(temp)){out.write(value.toString().getBytes(StandardCharsets.UTF_8));}if(!temp.renameTo(target))throw new IOException("State commit failed");}
-  void writeState(){try{EmbeddedCore active=core;writeJson("state.json",new JSONObject().put("configured",credentials!=null).put("linked",linked).put("connected",active!=null&&active.connected()).put("executor",active!=null&&active.executorConnected()).put("persisted",active!=null&&active.persisted()).put("draining",draining).put("pending_subscriptions",active==null?0:active.pendingSubscriptions()).put("resume_requested",resumeRequested).put("drain_uncertain",drainUncertain).put("interrupted_auth",interruptedAuth).put("configuration_error",configurationError).put("standby_compatibility",PowerCompatibility.enabled(this)).put("mode","ttvscore_smartalexa_bridge").put("metrics",active==null?new JSONObject():active.metrics.snapshot()).put("standby_exempt",Build.VERSION.SDK_INT<34||((PowerManager)getSystemService(POWER_SERVICE)).isExemptFromLowPowerStandby()).put("network_standby",Settings.System.getInt(getContentResolver(),"tcl_sys_network_standby_enabled",0)==1).put("enabled",getSharedPreferences("bridge",0).getBoolean("enabled",false)));}catch(Exception ignored){}}
+  void writeState(){try{EmbeddedCore active=core;writeJson("state.json",new JSONObject().put("configured",credentials!=null).put("updated_at",System.currentTimeMillis()).put("service_running",alive).put("linked",linked).put("connected",active!=null&&active.connected()).put("executor",active!=null&&active.executorConnected()).put("persisted",active!=null&&active.persisted()).put("draining",draining).put("pending_subscriptions",active==null?0:active.pendingSubscriptions()).put("resume_requested",resumeRequested).put("drain_uncertain",drainUncertain).put("interrupted_auth",interruptedAuth).put("configuration_error",configurationError).put("setup_error",setupError).put("standby_compatibility",PowerCompatibility.enabled(this)).put("mode","ttvscore_smartalexa_bridge").put("metrics",active==null?new JSONObject():active.metrics.snapshot()).put("standby_exempt",Build.VERSION.SDK_INT<34||((PowerManager)getSystemService(POWER_SERVICE)).isExemptFromLowPowerStandby()).put("network_standby",Settings.System.getInt(getContentResolver(),"tcl_sys_network_standby_enabled",0)==1).put("enabled",getSharedPreferences("bridge",0).getBoolean("enabled",false)));}catch(Exception ignored){}}
   @Override public IBinder onBind(Intent i){return null;}
   @Override protected synchronized void dump(FileDescriptor fd,PrintWriter out,String[] args){
     if(args!=null&&args.length>0&&"test-pause".equals(args[0])){main.post(()->requestPause());out.println("Pausa assíncrona solicitada");return;}
@@ -208,7 +246,7 @@ public class BridgeService extends Service {
     if(args!=null&&args.length>=2&&"test-command".equals(args[0])){final String json=args[1];main.post(()->{try{if(core!=null&&!draining){JSONObject data=new JSONObject(json);core.command(data);event("Teste enviado: tipo="+data.optInt("msg_type")+", ação="+data.optString("keyword"));}}catch(Exception e){event("Teste: "+root(e).getClass().getSimpleName());}});out.println("Teste agendado no motor nativo");return;}
     if(args!=null&&args.length>0&&"test-disconnect".equals(args[0])){main.post(()->{try{core.disconnectForTest();event("Teste: socket fechado para verificar recuperação automática");}catch(Exception e){event("Teste de conexão falhou");}});out.println("Teste de recuperação agendado");return;}
     if(args!=null&&args.length>0&&"test-executor-disconnect".equals(args[0])){main.post(()->{try{core.disconnectExecutorForTest();event("Teste: executor desconectado");}catch(Exception e){event("Teste de executor indisponível");}});out.println("Teste de recuperação do executor agendado");return;}
-    out.println("Alexa na TV 0.3.4 — TTVSCore + SmartAlexa oficiais");EmbeddedCore active=core;
+    out.println("Alexa na TV 0.4.0 — TTVSCore + SmartAlexa oficiais");EmbeddedCore active=core;
     out.println("cloud_connected="+(active!=null&&active.connected()));out.println("tcl_executor_connected="+(active!=null&&active.executorConnected()));
     out.println("native_state_persisted="+(active!=null&&active.persisted()));out.println("account_linked="+linked);out.println("standby_exempt="+(Build.VERSION.SDK_INT<34||((PowerManager)getSystemService(POWER_SERVICE)).isExemptFromLowPowerStandby()));out.println("standby_compatibility="+getSharedPreferences("bridge",0).getBoolean("standby_compatibility",false));out.println("autostart="+getSharedPreferences("bridge",0).getBoolean("autostart",true));
     out.println("draining="+draining);out.println("pending_subscriptions="+(active==null?0:active.pendingSubscriptions()));out.println("resume_requested="+resumeRequested);out.println("drain_uncertain="+drainUncertain);

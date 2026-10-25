@@ -21,6 +21,8 @@ public class MainActivity extends Activity {
   TextView text(String value,int size,int color){TextView t=new TextView(this);t.setText(value);t.setTextSize(size);t.setTextColor(color);return t;}
   LinearLayout column(){LinearLayout l=new LinearLayout(this);l.setOrientation(1);return l;}
   @Override public void onCreate(Bundle saved){super.onCreate(saved);getExternalFilesDir(null);
+    boolean existingLink=false;try{existingLink=new JSONObject(read("state.json")).optBoolean("linked");}catch(Exception ignored){}
+    if(!new File(getFilesDir(),"device-profile.json").exists()||!existingLink&&!getSharedPreferences("bridge",0).getBoolean("setup_complete",false)){startActivity(new Intent(this,SetupActivity.class));finish();return;}
     LinearLayout root=new LinearLayout(this);root.setPadding(dp(32),dp(30),dp(32),dp(24));root.setBackgroundColor(Color.rgb(18,22,28));
     LinearLayout menu=column();menu.setPadding(0,0,dp(26),0);root.addView(menu,new LinearLayout.LayoutParams(0,-1,.34f));
     TextView name=text("Alexa na TV",25,Color.WHITE);name.setTypeface(null,Typeface.BOLD);menu.addView(name);
@@ -28,6 +30,7 @@ public class MainActivity extends Activity {
     Button home=button(menu,"Visão geral",()->show(false));home.setSelected(true);
     toggle=button(menu,"Iniciar",()->{boolean running=getSharedPreferences("bridge",0).getBoolean("enabled",false);start(running?"PAUSE":"START");});
     button(menu,"Vincular conta",()->{show(false);start("LINK");});
+    button(menu,"Configurar esta TV",()->startActivity(new Intent(this,SetupActivity.class)));
     button(menu,"Reconectar",()->start("RECONNECT"));
     button(menu,"Configurações",()->settings());
     button(menu,"Diagnóstico",()->show(true));
@@ -79,7 +82,7 @@ public class MainActivity extends Activity {
       if(which==2)open(new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,Uri.parse("package:"+getPackageName())));
       if(which==3)start("UPDATE_PROFILE");
       if(which==4)groupDialog();
-      if(which==6){boolean next=!PowerCompatibility.enabled(this);try{PowerCompatibility.setEnabled(this,next);toast(next?"Alexa em espera ativada; pode aumentar o consumo":"Configuração anterior de energia restaurada");}catch(RuntimeException e){toast("Configuração de instalação pendente");}}
+      if(which==6){startActivity(new Intent(this,SetupActivity.class));toast("Use Preparar a TV para revisar e restaurar as opções de espera");}
 
       if(which==5)new AlertDialog.Builder(this).setTitle("Desvincular esta TV?").setMessage("O vínculo desta TV será removido da conta Alexa. Será necessário gerar outro código para conectar novamente.").setNegativeButton("Cancelar",null).setPositiveButton("Desvincular",(a,b)->start("LOGOUT")).show();
     }).setNegativeButton("Fechar",null).show();
@@ -90,6 +93,6 @@ public class MainActivity extends Activity {
   void open(Intent i){try{startActivity(i);}catch(Exception e){toast("Configuração indisponível nesta TV");}}
   void toast(String text){Toast.makeText(this,text,Toast.LENGTH_LONG).show();}
   @Override protected void onNewIntent(Intent i){super.onNewIntent(i);setIntent(i);}
-  @Override protected void onResume(){super.onResume();handler.post(refresh);}
+  @Override protected void onResume(){super.onResume();if(toggle!=null)handler.post(refresh);}
   @Override protected void onPause(){handler.removeCallbacks(refresh);super.onPause();}
 }

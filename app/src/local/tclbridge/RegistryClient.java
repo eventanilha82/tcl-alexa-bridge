@@ -40,6 +40,13 @@ final class RegistryClient {
     if(!staged.renameTo(target))throw new IOException("Não foi possível salvar o perfil privado da TV");
   }
 
+  static synchronized void installDetected(Context context,DeviceIdentity.Detected detected)throws Exception{
+    File target=new File(context.getFilesDir(),PROFILE);
+    if(target.exists()){validateProfile(read(new FileInputStream(target)));return;}
+    savePrivate(context,validateProfile(detected.profile),target);
+    context.getSharedPreferences("bridge",0).edit().putString("identity_source",detected.source).commit();
+  }
+
   private static JSONObject read(InputStream source)throws Exception{
     try(InputStream in=source;ByteArrayOutputStream out=new ByteArrayOutputStream()){
       byte[] b=new byte[1024];int n;
