@@ -1,6 +1,6 @@
 # Revisão com dois agentes
 
-A revisão foi dividida em runtime/Binder/ciclo de vida e portabilidade/build/publicação. O responsável integrou as correções e executa a regressão na TV.
+A revisão foi dividida em runtime/Binder/ciclo de vida e portabilidade/build/publicação. O responsável integrou as correções e concluiu a [regressão na TV do APK publicado](qa-v0.3.4.md).
 
 | Prioridade | Achado | Tratamento |
 |---|---|---|
