@@ -1,4 +1,4 @@
-# Arquitetura e dependências — 0.4.0
+# Arquitetura e dependências — 0.4.1
 
 **Português (Brasil)** | [English](en/architecture.md) · [Início](../README.md)
 
@@ -44,4 +44,4 @@ A integração depende de interfaces internas TCL; atualizações de firmware, D
 
 ## Compatibilidade da 0.4.1
 
-A pré-release amplia a reflexão para membros privados e herdados e reconstrói índices/referências DEX quando o redirecionamento do armazenamento rompe a ordenação das strings. Atua na cópia privada, mantém a pasta de credenciais e usa um novo identificador de cache. Não seleciona o fix pelo número de versão do Core. dexlib2 e suas dependências Java são incluídas no build; as bibliotecas nativas TCL continuam vindo dos componentes do aparelho. Veja [matriz](compatibility-v0.4.1.md) e [QA atual](qa-v0.4.1.md).
+A 0.4.1 amplia a reflexão para membros privados e herdados e reconstrói índices/referências DEX quando o redirecionamento do armazenamento rompe a ordenação das strings. Atua na cópia privada, mantém a pasta de credenciais e usa um novo identificador de cache. Não seleciona o fix pelo número de versão do Core. dexlib2 e suas dependências Java são incluídas no build; as bibliotecas nativas TCL continuam vindo dos componentes do aparelho. Veja [matriz](compatibility-v0.4.1.md) e [QA atual](qa-v0.4.1.md).

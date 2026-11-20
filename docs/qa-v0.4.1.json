@@ -1,7 +1,7 @@
 {
   "version": "0.4.1",
   "version_code": 11,
-  "release_channel": "prerelease",
+  "release_channel": "stable",
   "tested_on": "TCL C6K/G15 BR, Android14/API34, TTVSCore10.58.16, SmartAlexa6.13.25",
   "apk_sha256": "06131e0619d8474413b87ceb33310a33d6861efe3719c74c36725c95a74bd235",
   "apk_bytes": 1221573,
@@ -25,7 +25,8 @@
     "cloud_recovery": true,
     "actual_volume_and_callback": true,
     "original_volume_restored": true,
-    "activity_opened": false
+    "activity_opened": false,
+    "echo_volume_power_off_power_on_confirmed_by_user": true
   },
   "standby": {
     "seconds": 60,
@@ -38,7 +39,6 @@
   },
   "pending": [
     "Exact TCSCore10.60.03 artifact",
-    "Fresh Echo voice regression on0.4.1",
     "New-account setup and overnight standby on0.4.1"
   ],
   "privacy": "Sanitized summary only; no credentials, profiles, device identifiers or vendor APKs included in source",

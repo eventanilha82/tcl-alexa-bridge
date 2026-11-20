@@ -1,8 +1,8 @@
-# Verificação da 0.4.1 — pré-release
+# Verificação da 0.4.1
 
 **Português (Brasil)** | [English](en/qa-v0.4.1.md) · [Início](../README.md)
 
-Publicação para testes de compatibilidade; a estável continua sendo a 0.4.0. APK `TCL-Alexa-Bridge-0.4.1.apk`, versionCode 11, **1221573 bytes**, SHA-256:
+Release estável no escopo validado abaixo. A confirmação pelo Echo foi recebida após o primeiro commit de publicação da candidata; este relatório registra a conclusão da validação. APK `TCL-Alexa-Bridge-0.4.1.apk`, versionCode 11, **1221573 bytes**, SHA-256:
 
 ```text
 06131e0619d8474413b87ceb33310a33d6861efe3719c74c36725c95a74bd235
@@ -22,6 +22,7 @@ Ambiente funcional: TCL C6K/G15 BR, Android 14/API 34, TTVSCore 10.58.16 e Smart
 | Volume pelo motor nativo e callback | Efeito real, dois retornos concluídos, zero falhas; volume original restaurado |
 | Standby real de 60 segundos | Estado Asleep, nuvem/executor/vínculo/persistência mantidos |
 | Ciclo completo de standby/despertar | Passou: desligamento nativo, 60 segundos Asleep, despertar somente por UDP para Awake e estado saudável; sem abrir a interface |
+| Voz pelo Echo, sem abrir a ponte | Usuário confirmou volume, desligar e ligar após a rodada automática |
 | Testes locais | 11 checks de reflexão e ordenação DEX dos 64 APKs passaram |
 | Probe Android isolado | 48/64 passaram; 16 bloqueados na preparação |
 
@@ -31,7 +32,7 @@ O primeiro emissor de teste falhou no Mac com “sem rota para o host” ao envi
 
 A correção detecta membros e estruturas; não usa uma lista de versões para escolher quais reparar. Os testes Java da coleção não certificam registro ou todos os comandos Alexa em cada APK, firmware, região ou TV. Consulte a [matriz completa](compatibility-v0.4.1.md).
 
-A 10.60.03 exata não foi obtida. Permanecem pendentes voz pelo Echo nesta candidata, nova conta e uma noite em espera. Primeira configuração e boot têm evidência histórica da 0.4.0, não foram repetidos na 0.4.1. Esses limites justificam a pré-release; não há afirmação de compatibilidade universal ou paridade de 100%.
+A 10.60.03 exata não foi obtida. Permanecem pendentes nova conta e uma noite em espera nesta versão. Primeira configuração e boot têm evidência histórica da 0.4.0, não foram repetidos na 0.4.1. Não há afirmação de compatibilidade universal ou paridade de 100%.
 
 ## Atualizar e relatar
 

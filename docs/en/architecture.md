@@ -1,4 +1,4 @@
-# Architecture and dependencies — 0.4.0
+# Architecture and dependencies — 0.4.1
 
 [Português (Brasil)](../architecture.md) | **English** · [Home](../../README.en.md)
 
@@ -44,4 +44,4 @@ Integration depends on internal TCL interfaces; firmware, DEX, signer or Binder 
 
 ## Version 0.4.1 compatibility
 
-The prerelease extends reflection to private/inherited members and rebuilds DEX indices/references when storage redirection breaks string ordering. It changes the private runtime copy, retains the credential directory and uses a new cache identifier. It does not select fixes by Core version number. The build includes dexlib2 and its Java dependencies; native TCL libraries still come from the device components. See the [matrix](compatibility-v0.4.1.md) and [current QA](qa-v0.4.1.md).
+Version 0.4.1 extends reflection to private/inherited members and rebuilds DEX indices/references when storage redirection breaks string ordering. It changes the private runtime copy, retains the credential directory and uses a new cache identifier. It does not select fixes by Core version number. The build includes dexlib2 and its Java dependencies; native TCL libraries still come from the device components. See the [matrix](compatibility-v0.4.1.md) and [current QA](qa-v0.4.1.md).

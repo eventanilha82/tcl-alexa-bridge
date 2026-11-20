@@ -4,7 +4,7 @@
 
 The candidate fixes private TCSCore fields/constructors and DEX ordering in the bridge's runtime copy. The exact **10.60.03 sample has not been obtained** and is not certified by this study.
 
-The candidate also passed link-preserving update, persisted native renewal, socket/executor recovery and actual volume tests on the reference TV. See [0.4.1 QA](qa-v0.4.1.md) to distinguish these checks from the Java contracts and pending standby/voice regressions.
+The release also passed link-preserving update, persisted native renewal, socket/executor recovery and actual volume tests on the reference TV. See [0.4.1 QA](qa-v0.4.1.md) to distinguish these checks from the Java contracts and coverage limits.
 
 ## Validated scope
 

@@ -2,9 +2,9 @@
 
 **Português (Brasil)** | [English](en/compatibility-v0.4.1.md) · [Início](../README.md)
 
-A candidata corrige acessos a campos/construtores privados do TCSCore e a ordenação DEX da cópia de execução usada pela ponte. A versão exata **10.60.03 ainda não foi obtida** e não está certificada por este estudo.
+A versão corrige acessos a campos/construtores privados do TCSCore e a ordenação DEX da cópia de execução usada pela ponte. A versão exata **10.60.03 ainda não foi obtida** e não está certificada por este estudo.
 
-A candidata também passou por atualização preservando vínculo, renovação nativa persistida, recuperação de socket/executor e volume real na TV de referência. Consulte o [QA da 0.4.1](qa-v0.4.1.md) para separar esses testes dos contratos Java e das pendências de standby/voz.
+A versão também passou por atualização preservando vínculo, renovação nativa persistida, recuperação de socket/executor e volume real na TV de referência. Consulte o [QA da 0.4.1](qa-v0.4.1.md) para separar esses testes dos contratos Java e das limites de cobertura.
 
 ## O que foi validado
 

@@ -4,13 +4,13 @@
 
 Use Alexa na TCL C6K brasileira com configuração pelo controle remoto da TV. A ponte cuida do vínculo, da conexão e da recuperação; os componentes nativos **TTVSCore e SmartAlexa continuam necessários** para integrar e executar os comandos.
 
-**Versão 0.4.0 · Sem root ou troca de firmware · Projeto comunitário, sem certificação Works with Alexa.** A interface do aplicativo está em português.
+**Versão 0.4.1 · Sem root ou troca de firmware · Projeto comunitário, sem certificação Works with Alexa.** A interface do aplicativo está em português.
 
-**Nova pré-release [0.4.1](https://github.com/eventanilha82/tcl-alexa-bridge/releases/tag/v0.4.1):** corrige membros privados do núcleo e a ordenação DEX da cópia de execução. [Baixar APK 0.4.1](https://github.com/eventanilha82/tcl-alexa-bridge/releases/download/v0.4.1/TCL-Alexa-Bridge-0.4.1.apk) · [Compatibilidade](docs/compatibility-v0.4.1.md) · [QA](docs/qa-v0.4.1.md). A estável continua sendo a 0.4.0; a 10.60.03 exata ainda não foi testada.
+A **0.4.1** corrige membros privados do núcleo e a ordenação DEX da cópia de execução. Confira a [matriz de compatibilidade](docs/compatibility-v0.4.1.md) e o [QA](docs/qa-v0.4.1.md). A 10.60.03 exata ainda não foi testada; não há garantia de compatibilidade universal.
 
 ## Comece aqui
 
-1. Na TV, use o Downloader para baixar e instalar o [TCL Alexa Bridge 0.4.0](https://github.com/eventanilha82/tcl-alexa-bridge/releases/download/v0.4.0/TCL-Alexa-Bridge-0.4.0.apk).
+1. Na TV, use o Downloader para baixar e instalar o [TCL Alexa Bridge 0.4.1](https://github.com/eventanilha82/tcl-alexa-bridge/releases/download/v0.4.1/TCL-Alexa-Bridge-0.4.1.apk).
 2. Abra **Alexa na TV**. Se solicitado, escolha **Instalar SmartAlexa** e confirme o instalador do Android.
 3. Siga **Começar configuração**, habilite a depuração indicada pelo assistente e selecione **Autorizar e preparar**. Confirme a autorização do Android na própria TV.
 4. Selecione **Gerar meu código** e conclua o vínculo no celular pela skill **TCL Assistant**, no app Alexa.
@@ -46,13 +46,13 @@ O serviço retoma após reinício e recupera conexão/executor. O despertar por 
 
 Validado em **TCL C6K/G15 BR, Android 14, firmware V8-0016T01-LF1V048, TTVSCore 10.58.16 e SmartAlexa 6.13.25**. Outras TVs, regiões e firmwares ainda precisam de teste; interfaces internas TCL podem mudar.
 
-O APK final passou por atualização preservando vínculo, renovação, pausa/retomada, recuperação de conexão/executor, volume real, boot sem abrir a interface e standby de 60 segundos com despertar UDP. Volume, desligar e ligar pelo Echo foram confirmados em teste anterior; a rodada final da 0.4.0 foi automatizada.
+Na 0.4.1, atualização preservando vínculo, renovação nativa persistida, recuperação de conexão/executor, volume real e ciclo completo de standby de 60 segundos com despertar UDP passaram sem abrir a interface. O usuário confirmou volume, desligar e ligar pelo Echo. Primeira configuração e boot têm evidência histórica da 0.4.0 e não foram repetidos nesta rodada.
 
-Não há comprovação de paridade de 100%, uma noite inteira em standby, confirmação pelo celular numa conta Alexa inteiramente nova, instalador com SmartAlexa ausente ou restauração de energia pela interface nesta rodada. ACK do executor não garante efeito em todo player, canal ou periférico. Consulte o [relatório completo](docs/qa-v0.4.0.md).
+Não há comprovação de paridade de 100%, uma noite inteira em standby, confirmação pelo celular numa conta Alexa inteiramente nova, instalador com SmartAlexa ausente ou restauração de energia pela interface nesta rodada. ACK do executor não garante efeito em todo player, canal ou periférico. Consulte o [relatório completo](docs/qa-v0.4.1.md).
 
 ## Downloads e contribuição
 
-A [release v0.4.0](https://github.com/eventanilha82/tcl-alexa-bridge/releases/tag/v0.4.0) contém o APK da ponte e o [SmartAlexa 6.13.25 original](https://github.com/eventanilha82/tcl-alexa-bridge/releases/download/v0.4.0/SmartAlexa-6.13.25.apk) como arquivos separados. O assistente pode baixar o SmartAlexa; TTVSCore deve existir na TV.
+A [release v0.4.1](https://github.com/eventanilha82/tcl-alexa-bridge/releases/tag/v0.4.1) contém o APK da ponte e o [SmartAlexa 6.13.25 original](https://github.com/eventanilha82/tcl-alexa-bridge/releases/download/v0.4.1/SmartAlexa-6.13.25.apk) como arquivos separados. O assistente pode baixar o SmartAlexa; TTVSCore deve existir na TV.
 
 Para compilar, siga o [guia do zero](docs/build.md). O projeto usa Java/Android, sem Gradle obrigatório. Código próprio sob MIT; adblib modificado sob BSD; componentes TCL são proprietários. Veja [origem e licenças](THIRD_PARTY_NOTICES.md).
 

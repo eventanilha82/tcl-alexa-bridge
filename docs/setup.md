@@ -1,4 +1,4 @@
-# Configuração na TV — 0.4.0
+# Configuração na TV — 0.4.1
 
 **Português (Brasil)** | [English](en/setup.md) · [Início](../README.md)
 
@@ -8,13 +8,11 @@ A combinação testada é TCL C6K/G15 BR, Android 14, firmware V8-0016T01-LF1V04
 
 ## Baixar a ponte
 
-Para testar a correção de compatibilidade, use o [APK 0.4.1 (pré-release)](https://github.com/eventanilha82/tcl-alexa-bridge/releases/download/v0.4.1/TCL-Alexa-Bridge-0.4.1.apk). O passo a passo abaixo é o mesmo. Se já usa o APK oficial da ponte, instale por cima, sem desinstalar ou limpar dados, para preservar o vínculo. Consulte [compatibilidade](compatibility-v0.4.1.md) e [QA da 0.4.1](qa-v0.4.1.md). O SmartAlexa continua sendo o mesmo componente da estável.
-
-Para a versão estável 0.4.0:
+Se já usa o APK oficial da ponte, instale por cima, sem desinstalar ou limpar dados, para preservar o vínculo. Confira a [compatibilidade](compatibility-v0.4.1.md) e o [QA da 0.4.1](qa-v0.4.1.md).
 
 No Downloader da TV, abra:
 
-<https://github.com/eventanilha82/tcl-alexa-bridge/releases/download/v0.4.0/TCL-Alexa-Bridge-0.4.0.apk>
+<https://github.com/eventanilha82/tcl-alexa-bridge/releases/download/v0.4.1/TCL-Alexa-Bridge-0.4.1.apk>
 
 Instale o APK e abra **Alexa na TV**. Autorize a instalação pela fonte usada pelo Downloader quando o Android solicitar.
 
@@ -22,7 +20,7 @@ A ponte verifica TTVSCore e o SmartAlexa original instalado. Se o SmartAlexa est
 
 O SmartAlexa também pode ser baixado diretamente no Downloader:
 
-<https://github.com/eventanilha82/tcl-alexa-bridge/releases/download/v0.4.0/SmartAlexa-6.13.25.apk>
+<https://github.com/eventanilha82/tcl-alexa-bridge/releases/download/v0.4.1/SmartAlexa-6.13.25.apk>
 
 Esse componente é proprietário TCL; veja [origem, hashes e termos](../THIRD_PARTY_NOTICES.md). O app não instala TTVSCore ou firmware. Se a verificação apontar TTVSCore incompatível ou assinatura não reconhecida, resolva essa dependência antes de continuar. Um erro de assinatura numa atualização não deve ser contornado desinstalando automaticamente os aplicativos e apagando seu vínculo.
 
@@ -62,7 +60,7 @@ Use no Echo o nome exato da TV cadastrado na Alexa. Comece por “Alexa, aumente
 
 Na 0.4.0, a primeira configuração em instalação isolada comprovou coleta de identidade nativa sem arquivo importado, registro sem credenciais prévias, código, confirmação, renovação, conexão e persistência. O APK final de produção preservou vínculo ao atualizar e passou por renovação/pausa/retomada, recuperação do executor/socket e volume com efeito real.
 
-O reinício já recuperou serviço, vínculo, nuvem, executor e persistência sem abrir a interface, mantendo os ajustes de energia. O ciclo automático de 60 segundos em standby passou: desligamento nativo, conexão/executor ativos e despertar por UDP sem abrir a interface. A confirmação de voz no Echo na 0.4.0 ainda não foi feita nesta rodada. O download/instalador visível com SmartAlexa ausente, uma confirmação pelo celular numa conta inteiramente nova, a restauração de energia pela interface e uma noite em espera não foram exercitados nesta rodada; isso delimita o teste, sem indicar falha observada. Confira o [relatório atual](qa-v0.4.0.md) e os [limites de validação](validation.md).
+O reinício já recuperou serviço, vínculo, nuvem, executor e persistência sem abrir a interface, mantendo os ajustes de energia. O ciclo automático de 60 segundos em standby passou: desligamento nativo, conexão/executor ativos e despertar por UDP sem abrir a interface. A confirmação de voz no Echo na 0.4.0 ainda não foi feita nesta rodada. O download/instalador visível com SmartAlexa ausente, uma confirmação pelo celular numa conta inteiramente nova, a restauração de energia pela interface e uma noite em espera não foram exercitados nesta rodada; isso delimita o teste, sem indicar falha observada. A 0.4.1 passou no ciclo completo e recebeu confirmação de volume/desligar/ligar pelo Echo. Confira o [relatório atual](qa-v0.4.1.md) e os [limites de validação](validation.md).
 
 ![Painel com vínculo, nuvem, controles e despertar disponíveis](images/painel.png)
 

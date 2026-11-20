@@ -1,8 +1,8 @@
-# Version 0.4.1 verification — prerelease
+# Version 0.4.1 verification
 
 [Português (Brasil)](../qa-v0.4.1.md) | **English** · [Home](../../README.en.md)
 
-Published for compatibility testing; 0.4.0 remains stable. APK `TCL-Alexa-Bridge-0.4.1.apk`, versionCode 11, **1221573 bytes**, SHA-256:
+Stable release within the scope below. Echo confirmation arrived after the initial candidate publication commit; this report records the completed validation. APK `TCL-Alexa-Bridge-0.4.1.apk`, versionCode 11, **1221573 bytes**, SHA-256:
 
 ```text
 06131e0619d8474413b87ceb33310a33d6861efe3719c74c36725c95a74bd235
@@ -22,6 +22,7 @@ Functional environment: TCL C6K/G15 BR, Android 14/API 34, TTVSCore 10.58.16 and
 | Native volume and callback | Actual effect, two completed callbacks, zero failures; original volume restored |
 | 60 seconds in real standby | Asleep, cloud/executor/link/persistence retained |
 | Complete standby/wake cycle | Passed: native power-off,60 seconds Asleep, UDP-only wake to Awake and healthy state afterward; no UI opened |
+| Echo voice without opening the bridge | User confirmed volume, power off and power on after automated regression |
 | Host checks | 11 reflection checks and DEX ordering for all 64 APKs passed |
 | Isolated Android probe | 48/64 passed; 16 blocked during preparation |
 
@@ -31,7 +32,7 @@ The first test sender failed on the Mac with “no route to host” during unica
 
 The fix detects members and structures rather than selecting repairs by a version list. Collection Java tests do not qualify registration or every Alexa command for each APK, firmware, region or TV. See the [full matrix](compatibility-v0.4.1.md).
 
-The exact 10.60.03 artifact remains unavailable. Fresh Echo voice verification on this candidate, a new account and overnight standby remain pending. First setup and boot have historical 0.4.0 evidence and were not repeated on 0.4.1. These limits justify the prerelease; there is no universal compatibility or 100% parity claim.
+The exact 10.60.03 artifact remains unavailable. A new account and overnight standby remain pending on this version. First setup and boot have historical 0.4.0 evidence and were not repeated on 0.4.1. There is no universal compatibility or 100% parity claim.
 
 ## Update and report
 

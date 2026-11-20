@@ -1,4 +1,4 @@
-# TV setup — 0.4.0
+# TV setup — 0.4.1
 
 [Português (Brasil)](../setup.md) | **English** · [Home](../../README.en.md)
 
@@ -10,9 +10,9 @@ Tested combination: TCL C6K/G15 BR, Android 14, firmware V8-0016T01-LF1V048, TTV
 
 In Downloader on your TV, open:
 
-<https://github.com/eventanilha82/tcl-alexa-bridge/releases/download/v0.4.0/TCL-Alexa-Bridge-0.4.0.apk>
+<https://github.com/eventanilha82/tcl-alexa-bridge/releases/download/v0.4.1/TCL-Alexa-Bridge-0.4.1.apk>
 
-To test the compatibility fix, use the [0.4.1 prerelease APK](https://github.com/eventanilha82/tcl-alexa-bridge/releases/download/v0.4.1/TCL-Alexa-Bridge-0.4.1.apk). The steps below are the same. Install over an existing official bridge APK without uninstalling or clearing data to preserve linking. Read the [compatibility scope](compatibility-v0.4.1.md) and [0.4.1 QA](qa-v0.4.1.md). SmartAlexa remains the same component supplied with the stable release.
+Install over an existing official bridge APK without uninstalling or clearing data to preserve linking. Read the [compatibility scope](compatibility-v0.4.1.md) and [0.4.1 QA](qa-v0.4.1.md).
 
 Install the APK and open **Alexa na TV**. Allow installation from the source used by Downloader when Android asks.
 
@@ -20,7 +20,7 @@ The bridge checks the installed TTVSCore and original SmartAlexa. If SmartAlexa 
 
 You can also download SmartAlexa directly in Downloader:
 
-<https://github.com/eventanilha82/tcl-alexa-bridge/releases/download/v0.4.0/SmartAlexa-6.13.25.apk>
+<https://github.com/eventanilha82/tcl-alexa-bridge/releases/download/v0.4.1/SmartAlexa-6.13.25.apk>
 
 SmartAlexa is proprietary TCL software; see [provenance, hashes and terms](third-party-notices.md). The bridge does not install TTVSCore or firmware. Resolve incompatible TTVSCore or unrecognized signatures before continuing. Do not automatically uninstall apps and erase your link to work around an update signature error.
 
@@ -60,7 +60,7 @@ Use the exact TV name registered in Alexa. Start with volume up and power off co
 
 First setup in an isolated installation demonstrated native identity collection without an imported file, registration without previous credentials, code generation, confirmation, renewal, connection and persistence. The final production APK preserved the link on update and passed renewal/pause/resume, executor/socket recovery and volume with actual effect.
 
-Reboot recovered the service, account, cloud, executor and persistence without opening the UI, preserving power settings. An automated 60-second standby test passed: native power off, active cloud/executor and UDP wake without opening the UI. Echo voice confirmation on v0.4.0 was not repeated in this round. The visible installer with SmartAlexa absent, phone confirmation with an entirely new account, power restoration through the UI and overnight standby were not exercised in this round. These are coverage limits, not observed failures. See [QA](qa-v0.4.0.md) and [validation limits](validation.md).
+Reboot recovered the service, account, cloud, executor and persistence without opening the UI, preserving power settings. An automated 60-second standby test passed: native power off, active cloud/executor and UDP wake without opening the UI. Echo voice confirmation on v0.4.0 was not repeated in this round. The visible installer with SmartAlexa absent, phone confirmation with an entirely new account, power restoration through the UI and overnight standby were not exercised in this round. These are coverage limits, not observed failures. The 0.4.1 complete cycle and Echo volume/power-off/power-on checks passed. See [QA](qa-v0.4.1.md) and [validation limits](validation.md).
 
 ![Dashboard showing account, cloud, controls and wake status](../images/painel.png)
 
