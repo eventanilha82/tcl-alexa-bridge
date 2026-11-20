@@ -6,7 +6,7 @@ Use Alexa na TCL C6K brasileira com configuração pelo controle remoto da TV. A
 
 **Versão 0.4.0 · Sem root ou troca de firmware · Projeto comunitário, sem certificação Works with Alexa.** A interface do aplicativo está em português.
 
-Em preparação: **0.4.1-rc1**, correção para membros privados do núcleo TCL. Consulte o [escopo dos testes e a preparação da release](docs/compatibility-v0.4.1.md); a versão estável publicada continua sendo a 0.4.0.
+**Nova pré-release [0.4.1](https://github.com/eventanilha82/tcl-alexa-bridge/releases/tag/v0.4.1):** corrige membros privados do núcleo e a ordenação DEX da cópia de execução. [Baixar APK 0.4.1](https://github.com/eventanilha82/tcl-alexa-bridge/releases/download/v0.4.1/TCL-Alexa-Bridge-0.4.1.apk) · [Compatibilidade](docs/compatibility-v0.4.1.md) · [QA](docs/qa-v0.4.1.md). A estável continua sendo a 0.4.0; a 10.60.03 exata ainda não foi testada.
 
 ## Comece aqui
 
@@ -28,7 +28,7 @@ Para ligar por Alexa em espera, marque a opção voluntária durante a preparaç
 | Compilar meu próprio APK | [Compilação](docs/build.md) | [Build from source](docs/en/build.md) |
 | Entender a ponte e as dependências | [Arquitetura](docs/architecture.md) | [Architecture](docs/en/architecture.md) |
 | Resolver problemas ou restaurar energia | [Recuperação](docs/rollback.md) | [Recovery](docs/en/rollback.md) |
-| Conferir testes e limitações | [QA da 0.4.0](docs/qa-v0.4.0.md) · [Validação](docs/validation.md) | [v0.4.0 QA](docs/en/qa-v0.4.0.md) · [Validation](docs/en/validation.md) |
+| Conferir testes e limitações | [QA da 0.4.1](docs/qa-v0.4.1.md) · [QA da estável](docs/qa-v0.4.0.md) · [Validação](docs/validation.md) | [v0.4.1 QA](docs/en/qa-v0.4.1.md) · [Stable QA](docs/en/qa-v0.4.0.md) · [Validation](docs/en/validation.md) |
 | Revisar as proteções técnicas | [Revisão](docs/review.md) | [Technical review](docs/en/review.md) |
 | Conferir origem e licenças | [Componentes externos](THIRD_PARTY_NOTICES.md) | [Third-party notices](docs/en/third-party-notices.md) |
 

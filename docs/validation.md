@@ -2,6 +2,8 @@
 
 **Português (Brasil)** | [English](en/validation.md) · [Início](../README.md)
 
+Para a pré-release 0.4.1, confira o [novo relatório](qa-v0.4.1.md) e a [matriz de compatibilidade](compatibility-v0.4.1.md). Os resultados da 0.4.0 abaixo são históricos; não representam repetição de todos os testes na 0.4.1.
+
 Ambiente testado: TCL C6K BR/G15, Android 14, V8-0016T01-LF1V048, TTVSCore 10.58.16 e SmartAlexa 6.13.25. O [relatório da 0.4.0](qa-v0.4.0.md) identifica o APK final, as provas do novo assistente e os limites de cobertura.
 
 O APK final preservou vínculo na atualização, renovou tokens nativamente e passou por três ciclos de renovação/pausa/retomada, limpeza HTTP/Rx sem erro reportado, rebind do executor, reconexão do socket e dois volumes com efeito real/ACK, restaurando o nível original. DEX/manifest do build público, assinatura, produção sem depuração e licença BSD foram conferidos.

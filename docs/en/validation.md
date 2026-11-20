@@ -2,6 +2,8 @@
 
 [Português (Brasil)](../validation.md) | **English** · [Home](../../README.en.md)
 
+For the 0.4.1 prerelease, see the [new report](qa-v0.4.1.md) and [compatibility matrix](compatibility-v0.4.1.md). The 0.4.0 results below are historical; not all were repeated on 0.4.1.
+
 Tested environment: TCL C6K BR/G15, Android 14, V8-0016T01-LF1V048, TTVSCore 10.58.16 and SmartAlexa 6.13.25. The [v0.4.0 report](qa-v0.4.0.md) identifies the final APK, wizard evidence and coverage limits.
 
 The final APK preserved the link on update, renewed tokens natively and passed three renewal/pause/resume cycles, HTTP/Rx cleanup without reported errors, executor rebind, socket reconnection and two volume commands with actual effect/ACK, restoring the original level. DEX/manifest of the public build, signature, production debugging disabled and BSD license were verified.

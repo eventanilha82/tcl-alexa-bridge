@@ -38,3 +38,9 @@ The copy was modified to generate temporary ADB keys only during local preparati
 ## Build tools
 
 Android SDK/Build Tools, JDK and Python are external dependencies under their own terms. Install them from appropriate channels and accept their terms directly. Source contains no firmware, TCL APKs, decompiled libraries or TCL signing material; the explicitly separate binary distribution exception is the SmartAlexa asset described above.
+
+## DEX table reconstruction
+
+The private core copy uses dexlib2 2.5.2 (three-clause BSD) to rebuild indices and references when storage redirection changes DEX string ordering. Its dependencies are Guava 27.1-android, failureaccess 1.0 and JSR305 3.0.2, published under Apache 2.0. Processing is local; these libraries do not access the Alexa account or replace TCL native libraries.
+
+Pinned versions, Maven Central origins and SHA-256 hashes are in `dependencies.lock.json`. Source notices and the Apache 2.0 text are under `app/assets/licenses/` and included in the APK. dexlib2: https://github.com/JesusFreke/smali/tree/v2.5.2/dexlib2 · Guava: https://github.com/google/guava/tree/v27.1.

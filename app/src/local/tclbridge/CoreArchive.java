@@ -20,7 +20,7 @@ final class CoreArchive {
     if(sourceKey.equals(lastSource)&&prepared!=null&&prepared.isFile()&&!prepared.canWrite())return prepared;
     MessageDigest digest=MessageDigest.getInstance("SHA-256");try(InputStream input=new FileInputStream(original)){byte[] buffer=new byte[65536];int n;while((n=input.read(buffer))!=-1)digest.update(buffer,0,n);}
     StringBuilder hash=new StringBuilder();for(byte value:digest.digest())hash.append(String.format(java.util.Locale.ROOT,"%02x",value&255));
-    File cache=new File(context.getCodeCacheDir(),"ttvs-"+hash.toString()+"-storage-v3-"+(sdkShim?"trom":"native")+".jar");
+    File cache=new File(context.getCodeCacheDir(),"ttvs-"+hash.toString()+"-storage-v4-"+(sdkShim?"trom":"native")+".jar");
     if(cache.exists()){if(validRuntime(cache)){lastSource=sourceKey;prepared=cache;return cache;}if(!cache.delete())throw new IOException("Cannot replace invalid core cache");}
     File temp=new File(context.getCodeCacheDir(),"core-runtime.tmp");if(temp.exists()&&!temp.delete())throw new IOException("Cannot replace runtime staging file");
     int replacements=0,sdkChanges=0;
@@ -35,6 +35,7 @@ final class CoreArchive {
           try(InputStream in=source.getInputStream(entry)){byte[] buffer=new byte[65536];int count;while((count=in.read(buffer))!=-1)bytes.write(buffer,0,count);}
           byte[] data=bytes.toByteArray();int count=replace(data,SOURCE.getBytes(StandardCharsets.UTF_8),DESTINATION.getBytes(StandardCharsets.UTF_8));replacements+=count;
           int adapted=sdkShim?DexSdkCompat.patch(data):0;sdkChanges+=adapted;
+          if(count>0)data=DexOrderRepair.repair(data);
           if(count>0||adapted>0){byte[] signature=MessageDigest.getInstance("SHA-1").digest(java.util.Arrays.copyOfRange(data,32,data.length));System.arraycopy(signature,0,data,12,20);
             Adler32 checksum=new Adler32();checksum.update(data,12,data.length-12);ByteBuffer.wrap(data,8,4).order(ByteOrder.LITTLE_ENDIAN).putInt((int)checksum.getValue());}
           output.putNextEntry(new ZipEntry(name));output.write(data);output.closeEntry();

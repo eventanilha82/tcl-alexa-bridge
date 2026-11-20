@@ -1,0 +1,4 @@
+JSR305 3.0.2 (FindBugs JSR305 annotations)
+Published under Apache License 2.0 according to its Maven POM.
+https://repo.maven.apache.org/maven2/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.pom
+Full license: Apache-2.0.txt

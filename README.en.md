@@ -6,7 +6,7 @@ Use Alexa on a Brazilian TCL C6K with setup using the TV remote. The bridge mana
 
 **Version 0.4.0 · No root or firmware flashing · Community project, without Works with Alexa certification.** The app interface is currently in Portuguese.
 
-In preparation: **0.4.1-rc1**, a compatibility fix for private TCL core members. See the [test scope and release preparation](docs/en/compatibility-v0.4.1.md); the published stable version remains 0.4.0.
+**New [0.4.1 prerelease](https://github.com/eventanilha82/tcl-alexa-bridge/releases/tag/v0.4.1):** fixes private core members and DEX string ordering in the runtime copy. [Download 0.4.1 APK](https://github.com/eventanilha82/tcl-alexa-bridge/releases/download/v0.4.1/TCL-Alexa-Bridge-0.4.1.apk) · [Compatibility](docs/en/compatibility-v0.4.1.md) · [QA](docs/en/qa-v0.4.1.md). The stable release remains 0.4.0; the exact 10.60.03 build has not been tested.
 
 ## Start here
 
@@ -28,7 +28,7 @@ To turn on the TV through Alexa while in standby, enable the optional setting du
 | Build my own APK | [Build from source](docs/en/build.md) | [Compilação](docs/build.md) |
 | Understand the bridge and dependencies | [Architecture](docs/en/architecture.md) | [Arquitetura](docs/architecture.md) |
 | Troubleshoot or restore power settings | [Recovery](docs/en/rollback.md) | [Recuperação](docs/rollback.md) |
-| Check tests and limitations | [v0.4.0 QA](docs/en/qa-v0.4.0.md) · [Validation](docs/en/validation.md) | [QA da 0.4.0](docs/qa-v0.4.0.md) · [Validação](docs/validation.md) |
+| Check tests and limitations | [v0.4.1 QA](docs/en/qa-v0.4.1.md) · [Stable QA](docs/en/qa-v0.4.0.md) · [Validation](docs/en/validation.md) | [QA da 0.4.1](docs/qa-v0.4.1.md) · [QA da estável](docs/qa-v0.4.0.md) · [Validação](docs/validation.md) |
 | Review technical safeguards | [Technical review](docs/en/review.md) | [Revisão](docs/review.md) |
 | Check provenance and licenses | [Third-party notices](docs/en/third-party-notices.md) | [Componentes externos](THIRD_PARTY_NOTICES.md) |
 
