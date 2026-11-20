@@ -6,6 +6,8 @@ Use Alexa on a Brazilian TCL C6K with setup using the TV remote. The bridge mana
 
 **Version 0.4.0 · No root or firmware flashing · Community project, without Works with Alexa certification.** The app interface is currently in Portuguese.
 
+In preparation: **0.4.1-rc1**, a compatibility fix for private TCL core members. See the [test scope and release preparation](docs/en/compatibility-v0.4.1.md); the published stable version remains 0.4.0.
+
 ## Start here
 
 1. On the TV, use Downloader to download and install [TCL Alexa Bridge 0.4.0](https://github.com/eventanilha82/tcl-alexa-bridge/releases/download/v0.4.0/TCL-Alexa-Bridge-0.4.0.apk).
