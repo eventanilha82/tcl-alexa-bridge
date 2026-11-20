@@ -21,17 +21,17 @@ Functional environment: TCL C6K/G15 BR, Android 14/API 34, TTVSCore 10.58.16 and
 | Recovery after executor/socket disconnect | Both reconnected |
 | Native volume and callback | Actual effect, two completed callbacks, zero failures; original volume restored |
 | 60 seconds in real standby | Asleep, cloud/executor/link/persistence retained |
-| UDP wake in a separate test | Awake after three broadcasts; no ADB wake key used |
+| Complete standby/wake cycle | Passed: native power-off,60 seconds Asleep, UDP-only wake to Awake and healthy state afterward; no UI opened |
 | Host checks | 11 reflection checks and DEX ordering for all 64 APKs passed |
 | Isolated Android probe | 48/64 passed; 16 blocked during preparation |
 
-The first test sender failed on the Mac with “no route to host” during unicast and stopped before broadcasting. A subsequent broadcast woke the TV. This is not a successful complete cycle in one run. The ADB reconnection attempt during release preparation timed out, preventing completion of that regression now.
+The first test sender failed on the Mac with “no route to host” during unicast and stopped before broadcasting. A subsequent broadcast woke the TV. After the TV became available again, the complete cycle was repeated with the corrected sender and passed in one run. The installed APK was pulled and its SHA-256 exactly matched this release asset.
 
 ## Scope and pending checks
 
 The fix detects members and structures rather than selecting repairs by a version list. Collection Java tests do not qualify registration or every Alexa command for each APK, firmware, region or TV. See the [full matrix](compatibility-v0.4.1.md).
 
-The exact 10.60.03 artifact remains unavailable. Fresh Echo voice verification on this candidate, a complete single-run standby/wake cycle, a new account and overnight standby remain pending. First setup and boot have historical 0.4.0 evidence and were not repeated on 0.4.1. These limits justify the prerelease; there is no universal compatibility or 100% parity claim.
+The exact 10.60.03 artifact remains unavailable. Fresh Echo voice verification on this candidate, a new account and overnight standby remain pending. First setup and boot have historical 0.4.0 evidence and were not repeated on 0.4.1. These limits justify the prerelease; there is no universal compatibility or 100% parity claim.
 
 ## Update and report
 

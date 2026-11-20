@@ -21,17 +21,17 @@ Ambiente funcional: TCL C6K/G15 BR, Android 14/API 34, TTVSCore 10.58.16 e Smart
 | Recuperação após desconectar executor e socket | Ambos reconectaram |
 | Volume pelo motor nativo e callback | Efeito real, dois retornos concluídos, zero falhas; volume original restaurado |
 | Standby real de 60 segundos | Estado Asleep, nuvem/executor/vínculo/persistência mantidos |
-| Despertar por UDP em teste separado | Awake após três broadcasts; nenhuma tecla ADB usada |
+| Ciclo completo de standby/despertar | Passou: desligamento nativo, 60 segundos Asleep, despertar somente por UDP para Awake e estado saudável; sem abrir a interface |
 | Testes locais | 11 checks de reflexão e ordenação DEX dos 64 APKs passaram |
 | Probe Android isolado | 48/64 passaram; 16 bloqueados na preparação |
 
-O primeiro emissor de teste falhou no Mac com “sem rota para o host” ao enviar unicast e encerrou antes do broadcast. O broadcast posterior acordou a TV. Isso não equivale a um ciclo completo aprovado numa única execução. A tentativa de reconexão ADB durante a preparação da release expirou; não foi possível fechar essa regressão agora.
+O primeiro emissor de teste falhou no Mac com “sem rota para o host” ao enviar unicast e encerrou antes do broadcast. O broadcast posterior acordou a TV. Após a TV ficar disponível novamente, o ciclo completo foi repetido com o emissor corrigido e passou numa única execução. O APK instalado foi copiado e seu SHA-256 conferiu exatamente com o asset desta release.
 
 ## Escopo e pendências
 
 A correção detecta membros e estruturas; não usa uma lista de versões para escolher quais reparar. Os testes Java da coleção não certificam registro ou todos os comandos Alexa em cada APK, firmware, região ou TV. Consulte a [matriz completa](compatibility-v0.4.1.md).
 
-A 10.60.03 exata não foi obtida. Permanecem pendentes voz pelo Echo nesta candidata, ciclo único completo de standby/despertar, nova conta e uma noite em espera. Primeira configuração e boot têm evidência histórica da 0.4.0, não foram repetidos na 0.4.1. Esses limites justificam a pré-release; não há afirmação de compatibilidade universal ou paridade de 100%.
+A 10.60.03 exata não foi obtida. Permanecem pendentes voz pelo Echo nesta candidata, nova conta e uma noite em espera. Primeira configuração e boot têm evidência histórica da 0.4.0, não foram repetidos na 0.4.1. Esses limites justificam a pré-release; não há afirmação de compatibilidade universal ou paridade de 100%.
 
 ## Atualizar e relatar
 

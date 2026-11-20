@@ -33,13 +33,14 @@
     "cloud_executor_link_persistence_retained": true,
     "initial_wake_sender_error": "Mac unicast packet send failed: no route; broadcast was not attempted by initial sender",
     "separate_broadcast_recovery": "Awake observed after3 broadcast UDP packets, without ADB wake key",
-    "complete_single_run_regression_finished": false
+    "complete_single_run_regression_finished": true,
+    "single_run_result": "Native power-off,60s Asleep with cloud/executor/link retained, UDP-only wake to Awake and healthy state after wake"
   },
   "pending": [
     "Exact TCSCore10.60.03 artifact",
     "Fresh Echo voice regression on0.4.1",
-    "Complete single-run standby/wake regression",
     "New-account setup and overnight standby on0.4.1"
   ],
-  "privacy": "Sanitized summary only; no credentials, profiles, device identifiers or vendor APKs included in source"
+  "privacy": "Sanitized summary only; no credentials, profiles, device identifiers or vendor APKs included in source",
+  "installed_release_hash_rechecked": true
 }
