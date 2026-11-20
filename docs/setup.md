@@ -8,6 +8,10 @@ A combinação testada é TCL C6K/G15 BR, Android 14, firmware V8-0016T01-LF1V04
 
 ## Baixar a ponte
 
+Para testar a correção de compatibilidade, use o [APK 0.4.1 (pré-release)](https://github.com/eventanilha82/tcl-alexa-bridge/releases/download/v0.4.1/TCL-Alexa-Bridge-0.4.1.apk). O passo a passo abaixo é o mesmo. Se já usa o APK oficial da ponte, instale por cima, sem desinstalar ou limpar dados, para preservar o vínculo. Consulte [compatibilidade](compatibility-v0.4.1.md) e [QA da 0.4.1](qa-v0.4.1.md). O SmartAlexa continua sendo o mesmo componente da estável.
+
+Para a versão estável 0.4.0:
+
 No Downloader da TV, abra:
 
 <https://github.com/eventanilha82/tcl-alexa-bridge/releases/download/v0.4.0/TCL-Alexa-Bridge-0.4.0.apk>

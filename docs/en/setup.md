@@ -12,6 +12,8 @@ In Downloader on your TV, open:
 
 <https://github.com/eventanilha82/tcl-alexa-bridge/releases/download/v0.4.0/TCL-Alexa-Bridge-0.4.0.apk>
 
+To test the compatibility fix, use the [0.4.1 prerelease APK](https://github.com/eventanilha82/tcl-alexa-bridge/releases/download/v0.4.1/TCL-Alexa-Bridge-0.4.1.apk). The steps below are the same. Install over an existing official bridge APK without uninstalling or clearing data to preserve linking. Read the [compatibility scope](compatibility-v0.4.1.md) and [0.4.1 QA](qa-v0.4.1.md). SmartAlexa remains the same component supplied with the stable release.
+
 Install the APK and open **Alexa na TV**. Allow installation from the source used by Downloader when Android asks.
 
 The bridge checks the installed TTVSCore and original SmartAlexa. If SmartAlexa is missing or old, choose **Instalar SmartAlexa** (Install SmartAlexa). Allow **Alexa na TV** to install apps in Android settings and return to the wizard. It downloads the original APK, verifies its hash, package, version and certificate, then opens Android's installer for confirmation.

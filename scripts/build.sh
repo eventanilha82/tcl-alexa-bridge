@@ -4,9 +4,12 @@ BRIDGE_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 BRIDGE_SDK="${ANDROID_SDK_ROOT:-${ANDROID_HOME:-}}"
 BRIDGE_TOOLS="${BRIDGE_BUILD_TOOLS:-${BRIDGE_SDK}/build-tools/36.0.0}"
 BRIDGE_ANDROID="${BRIDGE_ANDROID_JAR:-${BRIDGE_SDK}/platforms/android-34/android.jar}"
-BRIDGE_PRIVATE="$BRIDGE_ROOT/.private"
+BRIDGE_PRIVATE="${BRIDGE_SIGNING_DIR:-$BRIDGE_ROOT/.private}"
 BRIDGE_OUT="$BRIDGE_ROOT/build"
 [[ -f "$BRIDGE_ANDROID" && -x "$BRIDGE_TOOLS/d8" ]] || { echo 'Configure Android SDK Platform 34 e Build Tools 36.0.0; veja README.' >&2; exit 1; }
+BRIDGE_DEPENDENCIES="$(python3 "$BRIDGE_ROOT/scripts/ensure-dependencies.py")"
+export BRIDGE_DEPENDENCIES
+IFS=: read -r -a BRIDGE_DEPENDENCY_JARS <<< "$BRIDGE_DEPENDENCIES"
 mkdir -p "$BRIDGE_PRIVATE" "$BRIDGE_OUT/classes" "$BRIDGE_OUT/dex"
 chmod 700 "$BRIDGE_PRIVATE"
 if [[ ! -f "$BRIDGE_PRIVATE/signing.p12" ]]; then
@@ -21,14 +24,15 @@ python3 - "$BRIDGE_ROOT" <<'PY'
 import pathlib,sys,subprocess
 root=pathlib.Path(sys.argv[1]);classes=root/'build/classes'
 for p in classes.rglob('*.class'):p.unlink()
+for p in (root/'build/dex').glob('classes*.dex'):p.unlink()
 import os
 sdk=os.environ.get('ANDROID_SDK_ROOT',os.environ.get('ANDROID_HOME',''))
 android=os.environ.get('BRIDGE_ANDROID_JAR',sdk+'/platforms/android-34/android.jar')
 sources=sorted(str(p) for p in (root/'app/src').rglob('*.java'))
-subprocess.run(['javac','--release','8','-cp',android,'-d',str(classes),*sources],check=True)
+subprocess.run(['javac','--release','8','-cp',android+os.pathsep+os.environ['BRIDGE_DEPENDENCIES'],'-d',str(classes),*sources],check=True)
 PY
 jar cf "$BRIDGE_OUT/app.jar" -C "$BRIDGE_OUT/classes" .
-"$BRIDGE_TOOLS/d8" --min-api 34 --lib "$BRIDGE_ANDROID" --output "$BRIDGE_OUT/dex" "$BRIDGE_OUT/app.jar"
+"$BRIDGE_TOOLS/d8" --min-api 34 --lib "$BRIDGE_ANDROID" --output "$BRIDGE_OUT/dex" "$BRIDGE_OUT/app.jar" "${BRIDGE_DEPENDENCY_JARS[@]}"
 "$BRIDGE_TOOLS/aapt" package -f -M "$BRIDGE_ROOT/app/AndroidManifest.xml" -I "$BRIDGE_ANDROID" -S "$BRIDGE_ROOT/app/res" -A "$BRIDGE_ROOT/app/assets" -F "$BRIDGE_OUT/unsigned.apk"
 python3 - "$BRIDGE_OUT" <<'PY'
 import pathlib,sys,zipfile

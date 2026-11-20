@@ -87,24 +87,24 @@ final class EmbeddedCore {
         receivers.add(relay);return host.registerReceiver(relay,filter,Context.RECEIVER_NOT_EXPORTED);
       }
     };
-    loader.loadClass("com.tcl.ff.component.utils.common.Utils").getField("sApp").set(null,new CoreApplication(host.getApplicationContext()));
+    CoreReflection.field(loader.loadClass("com.tcl.ff.component.utils.common.Utils"),"sApp").set(null,new CoreApplication(host.getApplicationContext()));
     managerClass=loader.loadClass("com.tcl.ttvs.alexa.core.AlexaManager");
-    manager=managerClass.getConstructor(Context.class).newInstance(wrapped);
-    managerClass.getField("sInstance").set(null,manager);
+    manager=CoreReflection.constructor(managerClass,Context.class).newInstance(wrapped);
+    CoreReflection.field(managerClass,"sInstance").set(null,manager);
     isolateBlockingHeartbeat();
-    Class<?> deviceClass=loader.loadClass("com.tcl.ttvs.alexa.core.device.DeviceInfo");Object device=deviceClass.getConstructor().newInstance();
-    for(Iterator<String> it=profile.keys();it.hasNext();){String key=it.next();try{Field f=deviceClass.getField(key);f.set(device,f.getType()==int.class?profile.optInt(key):profile.optString(key));}catch(NoSuchFieldException ignored){}}
-    Class<?> fileClass=loader.loadClass("com.tcl.ttvs.alexa.core.device.FileInfo");Object file=fileClass.getConstructor().newInstance();
+    Class<?> deviceClass=loader.loadClass("com.tcl.ttvs.alexa.core.device.DeviceInfo");Object device=CoreReflection.constructor(deviceClass).newInstance();
+    for(Iterator<String> it=profile.keys();it.hasNext();){String key=it.next();Field f=CoreReflection.field(deviceClass,key);if(f.getType()!=int.class&&f.getType()!=String.class)throw new IllegalStateException("Unsupported TCL device field: "+key);f.set(device,f.getType()==int.class?profile.getInt(key):profile.getString(key));}
+    Class<?> fileClass=loader.loadClass("com.tcl.ttvs.alexa.core.device.FileInfo");Object file=CoreReflection.constructor(fileClass).newInstance();
     set(file,"server_host","https://ai.tclking.com");set(file,"server_domain","https://ai.tclking.com");set(file,"software_version",profile.optString("software_version"));
     JSONObject initial=credentials==null?new JSONObject():credentials;
     set(file,"uuid",initial.optString("uuid"));set(file,"tcl_token",initial.optString("access_token"));set(file,"tcl_refreshtoken",initial.optString("refresh_token"));
     set(file,"tcl_token_expires_at",initial.optLong("expires_at"));set(file,"wwa_status","enable");set(file,"avgs_login",activation?"false":"true");set(file,"device",device);
-    managerClass.getField("mFileInfo").set(manager,file);managerClass.getField("isDiscovered").setBoolean(manager,true);managerClass.getField("isNeedQuery").setBoolean(manager,activation);
+    CoreReflection.field(managerClass,"mFileInfo").set(manager,file);CoreReflection.field(managerClass,"isDiscovered").setBoolean(manager,true);CoreReflection.field(managerClass,"isNeedQuery").setBoolean(manager,activation);
     File storage=new File(host.getFilesDir(),"aa");if(!storage.exists()&&!storage.mkdirs())throw new java.io.IOException("Cannot create core state directory");new File(storage,".alexa.db").createNewFile();
     loader.loadClass("com.tcl.ttvs.alexa.core.utils.FileUtils").getMethod("saveConfig",fileClass).invoke(null,file);
     Class<?> handlerClass=loader.loadClass("com.tcl.ttvs.alexa.core.AlexaManager$MsgHandler");
-    managerClass.getField("mHandler").set(manager,handlerClass.getConstructor(WeakReference.class).newInstance(new WeakReference<Object>(manager)));
-    managerClass.getField("isDebug").setInt(manager,28);
+    CoreReflection.field(managerClass,"mHandler").set(manager,CoreReflection.constructor(handlerClass,WeakReference.class).newInstance(new WeakReference<Object>(manager)));
+    CoreReflection.field(managerClass,"isDebug").setInt(manager,28);
     installSubscriptionGuard();
     Class<?> http=loader.loadClass("com.tcl.ff.component.core.http.core.HttpCore");
     http.getMethod("initialize",String.class).invoke(http.getMethod("getInstance").invoke(null),"https://ai.tclking.com");
@@ -112,18 +112,18 @@ final class EmbeddedCore {
     if(activation){
       long remaining=resumeExpiresAt-System.currentTimeMillis()/1000;
       if(remaining>0&&remaining<=86400){
-        activationExpiresAt=resumeExpiresAt;managerClass.getField("isGetActiveCode").setBoolean(manager,true);managerClass.getMethod("getAVGStateFromServer").invoke(manager);
-        Handler h=(Handler)managerClass.getField("mHandler").get(manager);h.postDelayed(()->{if(stopped||quiesced||accountLinked())return;stopActivationTimer();h.removeMessages(4102);if(activationEvents!=null)activationEvents.accept(34,"");},remaining*1000);
+        activationExpiresAt=resumeExpiresAt;CoreReflection.field(managerClass,"isGetActiveCode").setBoolean(manager,true);managerClass.getMethod("getAVGStateFromServer").invoke(manager);
+        Handler h=(Handler)CoreReflection.field(managerClass,"mHandler").get(manager);h.postDelayed(()->{if(stopped||quiesced||accountLinked())return;stopActivationTimer();h.removeMessages(4102);if(activationEvents!=null)activationEvents.accept(34,"");},remaining*1000);
       }else requestActivation();
     }else managerClass.getMethod("initSocketClient").invoke(manager);
     report.accept("TTVSCore carregado; persistência nativa redirecionada ao armazenamento privado do auxiliar");
   }
   void requestActivation()throws Exception{if(stopped||quiesced)return;activationExpiresAt=0;managerClass.getMethod("getActiveCodeImpl").invoke(manager);}
-  boolean accountLinked(){if(stopped||quiesced||manager==null)return false;try{Object file=managerClass.getField("mFileInfo").get(manager);return "true".equalsIgnoreCase((String)file.getClass().getField("avgs_login").get(file));}catch(Exception e){return false;}}
+  boolean accountLinked(){if(stopped||quiesced||manager==null)return false;try{Object file=CoreReflection.field(managerClass,"mFileInfo").get(manager);return "true".equalsIgnoreCase((String)CoreReflection.field(file.getClass(),"avgs_login").get(file));}catch(Exception e){return false;}}
   void isolateBlockingHeartbeat()throws Exception{
     // The original runnable only inspects the socket, connects it and posts native
     // handler messages; its blocking connect must not run on the activity looper.
-    Field field=managerClass.getField("mHeartRunnable");Runnable nativeHeartbeat=(Runnable)field.get(manager);
+    Field field=CoreReflection.field(managerClass,"mHeartRunnable");Runnable nativeHeartbeat=(Runnable)field.get(manager);
     field.set(manager,(Runnable)()->{
       if(stopped||quiesced||!heartbeatRunning.compareAndSet(false,true))return;
       try{heartbeatWorker.execute(()->{try{if(!stopped&&!quiesced)nativeHeartbeat.run();}
@@ -181,11 +181,11 @@ final class EmbeddedCore {
     });
     plugins.getMethod("setOnFlowableSubscribe",function).invoke(null,guard);
   }
-  static void set(Object object,String name,Object value)throws Exception{object.getClass().getField(name).set(object,value);}
-  boolean connected(){if(stopped||quiesced)return false;try{Object socket=managerClass.getField("mWebSocketClient").get(manager);return socket!=null&&(Boolean)socket.getClass().getMethod("isOpen").invoke(socket);}catch(Exception e){return false;}}
+  static void set(Object object,String name,Object value)throws Exception{CoreReflection.field(object.getClass(),name).set(object,value);}
+  boolean connected(){if(stopped||quiesced)return false;try{Object socket=CoreReflection.field(managerClass,"mWebSocketClient").get(manager);return socket!=null&&(Boolean)socket.getClass().getMethod("isOpen").invoke(socket);}catch(Exception e){return false;}}
   JSONObject credentials()throws Exception{
-    Object file=managerClass.getField("mFileInfo").get(manager);Class<?> c=file.getClass();
-    return new JSONObject().put("uuid",c.getField("uuid").get(file)).put("access_token",c.getField("tcl_token").get(file)).put("refresh_token",c.getField("tcl_refreshtoken").get(file)).put("expires_at",c.getField("tcl_token_expires_at").getLong(file));
+    Object file=CoreReflection.field(managerClass,"mFileInfo").get(manager);Class<?> c=file.getClass();
+    return new JSONObject().put("uuid",CoreReflection.field(c,"uuid").get(file)).put("access_token",CoreReflection.field(c,"tcl_token").get(file)).put("refresh_token",CoreReflection.field(c,"tcl_refreshtoken").get(file)).put("expires_at",CoreReflection.field(c,"tcl_token_expires_at").getLong(file));
   }
   boolean persisted(){try{
     File file=new File(host.getFilesDir(),"aa/.alexa.db");byte[] raw=java.nio.file.Files.readAllBytes(file.toPath());
@@ -194,12 +194,12 @@ final class EmbeddedCore {
   }catch(Exception e){return false;}}
 
   Object nativeBridge()throws Exception{Class<?> c=loader.loadClass("com.tcl.ttvs.alexa.core.WebSocketManager");return c.getMethod("getInstance",Context.class).invoke(null,host);}
-  boolean executorConnected(){if(stopped||quiesced)return false;try{Object invoke=nativeBridge().getClass().getField("mInvokeHandler").get(nativeBridge());if(invoke==wrappedInvoke)invoke=originalInvoke;if(invoke==null)return false;IBinder binder=(IBinder)invoke.getClass().getMethod("asBinder").invoke(invoke);return binder!=null&&binder.isBinderAlive();}catch(Exception e){return false;}}
+  boolean executorConnected(){if(stopped||quiesced)return false;try{Object invoke=CoreReflection.field(nativeBridge().getClass(),"mInvokeHandler").get(nativeBridge());if(invoke==wrappedInvoke)invoke=originalInvoke;if(invoke==null)return false;IBinder binder=(IBinder)invoke.getClass().getMethod("asBinder").invoke(invoke);return binder!=null&&binder.isBinderAlive();}catch(Exception e){return false;}}
   void recoverExecutor()throws Exception{
     if(stopped||quiesced||executorConnected()||SystemClock.elapsedRealtime()-lastExecutorRecovery<5000)return;lastExecutorRecovery=SystemClock.elapsedRealtime();Object bridge=nativeBridge();Class<?> c=bridge.getClass();
-    ServiceConnection old=(ServiceConnection)c.getField("mServiceConnection").get(bridge);if(old!=null)unbindConnection(old);
-    c.getField("mInvokeHandler").set(bridge,null);c.getField("mServiceConnection").set(bridge,null);c.getField("mIsBind").setBoolean(bridge,false);
-    Class<?> state=loader.loadClass("com.tcl.ttvs.alexa.core.WebSocketManager$BindAlexaServiceState");c.getField("mBindAlexaServiceState").set(bridge,state.getField("NOT_BIND").get(null));
+    ServiceConnection old=(ServiceConnection)CoreReflection.field(c,"mServiceConnection").get(bridge);if(old!=null)unbindConnection(old);
+    CoreReflection.field(c,"mInvokeHandler").set(bridge,null);CoreReflection.field(c,"mServiceConnection").set(bridge,null);CoreReflection.field(c,"mIsBind").setBoolean(bridge,false);
+    Class<?> state=loader.loadClass("com.tcl.ttvs.alexa.core.WebSocketManager$BindAlexaServiceState");CoreReflection.field(c,"mBindAlexaServiceState").set(bridge,CoreReflection.field(state,"NOT_BIND").get(null));
     c.getMethod("bindRemoteService",int.class,String.class).invoke(bridge,-1,"");report.accept("Vínculo com executor SmartAlexa solicitado");
   }
   Object observeCallback(Object callback,Class<?> callbackType,BridgeMetrics.Ticket ticket)throws Exception{
@@ -236,12 +236,12 @@ final class EmbeddedCore {
   }
   void installWakeAdapter(WakeSupport wake)throws Exception{
     if(stopped||quiesced)return;if(wake!=null)wakeAdapter=wake;
-    Object bridge=nativeBridge();Field field=bridge.getClass().getField("mInvokeHandler");Object target=field.get(bridge);
+    Object bridge=nativeBridge();Field field=CoreReflection.field(bridge.getClass(),"mInvokeHandler");Object target=field.get(bridge);
     if(target==null||target==wrappedInvoke)return;field.set(bridge,wrapInvoke(target,field.getType()));
   }
-  void disconnectExecutorForTest()throws Exception{Object bridge=nativeBridge();bridge.getClass().getMethod("unBindRemoteService").invoke(bridge);bridge.getClass().getField("mInvokeHandler").set(bridge,null);}
-  void reconnect()throws Exception{if(stopped||quiesced)return;Handler handler=(Handler)managerClass.getField("mHandler").get(manager);handler.removeMessages(4131);managerClass.getMethod("initSocketClient").invoke(manager);}
-  void disconnectForTest()throws Exception{Object socket=managerClass.getField("mWebSocketClient").get(manager);socket.getClass().getMethod("close").invoke(socket);}
+  void disconnectExecutorForTest()throws Exception{Object bridge=nativeBridge();bridge.getClass().getMethod("unBindRemoteService").invoke(bridge);CoreReflection.field(bridge.getClass(),"mInvokeHandler").set(bridge,null);}
+  void reconnect()throws Exception{if(stopped||quiesced)return;Handler handler=(Handler)CoreReflection.field(managerClass,"mHandler").get(manager);handler.removeMessages(4131);managerClass.getMethod("initSocketClient").invoke(manager);}
+  void disconnectForTest()throws Exception{Object socket=CoreReflection.field(managerClass,"mWebSocketClient").get(manager);socket.getClass().getMethod("close").invoke(socket);}
   void refresh()throws Exception{if(stopped||quiesced)return;managerClass.getMethod("refreshTclTokenFromServer",int.class,String.class).invoke(manager,4103,"");}
   void command(JSONObject data)throws Exception{
     if(stopped||quiesced)throw new IllegalStateException("Core stopped");
@@ -255,22 +255,22 @@ final class EmbeddedCore {
     bridge.getMethod("onMessage",String.class).invoke(nativeBridge,command.toString());
   }
   int pendingSubscriptions(){synchronized(subscriptions){return subscriptions.size();}}
-  void stopActivationTimer(){if(manager==null)return;try{managerClass.getField("isNeedQuery").setBoolean(manager,false);Object timer=managerClass.getField("mDisposable").get(manager);if(timer!=null){loader.loadClass("io.reactivex.disposables.Disposable").getMethod("dispose").invoke(timer);managerClass.getField("mDisposable").set(manager,null);}}catch(Exception ignored){}}
+  void stopActivationTimer(){if(manager==null)return;try{CoreReflection.field(managerClass,"isNeedQuery").setBoolean(manager,false);Object timer=CoreReflection.field(managerClass,"mDisposable").get(manager);if(timer!=null){loader.loadClass("io.reactivex.disposables.Disposable").getMethod("dispose").invoke(timer);CoreReflection.field(managerClass,"mDisposable").set(manager,null);}}catch(Exception ignored){}}
   /** Stop control delivery while allowing an already started HTTP refresh to save tokens. */
   void quiesce(){
     if(stopped||quiesced)return;quiesced=true;metrics.stop();
     for(BroadcastReceiver r:receivers)try{host.unregisterReceiver(r);}catch(Exception ignored){}receivers.clear();
     synchronized(bindings){for(ServiceConnection relay:bindings.values())try{host.unbindService(relay);}catch(IllegalArgumentException ignored){}bindings.clear();}
     if(manager==null){heartbeatWorker.shutdownNow();return;}
-    try{Object file=managerClass.getField("mFileInfo").get(manager);set(file,"avgs_login","false");managerClass.getField("isGetTokenPower").setBoolean(manager,false);}catch(Exception ignored){}
+    try{Object file=CoreReflection.field(managerClass,"mFileInfo").get(manager);set(file,"avgs_login","false");CoreReflection.field(managerClass,"isGetTokenPower").setBoolean(manager,false);}catch(Exception ignored){}
     stopActivationTimer();
-    try{Object udp=managerClass.getField("udpClient").get(manager);if(udp!=null)udp.getClass().getMethod("releaseSource").invoke(udp);}catch(Exception ignored){}
-    try{Object socket=managerClass.getField("mWebSocketClient").get(manager);if(socket!=null){Class<?> state=loader.loadClass("com.tcl.ttvs.alexa.core.CustomWebClient$OnSocketState");socket.getClass().getMethod("setOnSocketState",state).invoke(socket,new Object[]{null});socket.getClass().getMethod("close").invoke(socket);}}catch(Exception ignored){}
+    try{Object udp=CoreReflection.field(managerClass,"udpClient").get(manager);if(udp!=null)udp.getClass().getMethod("releaseSource").invoke(udp);}catch(Exception ignored){}
+    try{Object socket=CoreReflection.field(managerClass,"mWebSocketClient").get(manager);if(socket!=null){Class<?> state=loader.loadClass("com.tcl.ttvs.alexa.core.CustomWebClient$OnSocketState");socket.getClass().getMethod("setOnSocketState",state).invoke(socket,new Object[]{null});socket.getClass().getMethod("close").invoke(socket);}}catch(Exception ignored){}
     heartbeatWorker.shutdownNow();
     // Do not leave a null-handler interval: an in-flight refresh may finish now.
     // MsgHandler constructed with a null manager ignores messages and cannot reopen a session.
-    try{Object old=managerClass.getField("mHandler").get(manager);if(old instanceof Handler)((Handler)old).removeCallbacksAndMessages(null);Class<?> handler=loader.loadClass("com.tcl.ttvs.alexa.core.AlexaManager$MsgHandler");managerClass.getField("mHandler").set(manager,handler.getConstructor(WeakReference.class).newInstance(new WeakReference<Object>(null)));}catch(Exception ignored){}
-    try{Object bridge=nativeBridge();bridge.getClass().getField("mInvokeHandler").set(bridge,null);bridge.getClass().getField("mIsBind").setBoolean(bridge,false);bridge.getClass().getField("mServiceConnection").set(bridge,null);}catch(Exception ignored){}
+    try{Object old=CoreReflection.field(managerClass,"mHandler").get(manager);if(old instanceof Handler)((Handler)old).removeCallbacksAndMessages(null);Class<?> handler=loader.loadClass("com.tcl.ttvs.alexa.core.AlexaManager$MsgHandler");CoreReflection.field(managerClass,"mHandler").set(manager,CoreReflection.constructor(handler,WeakReference.class).newInstance(new WeakReference<Object>(null)));}catch(Exception ignored){}
+    try{Object bridge=nativeBridge();CoreReflection.field(bridge.getClass(),"mInvokeHandler").set(bridge,null);CoreReflection.field(bridge.getClass(),"mIsBind").setBoolean(bridge,false);CoreReflection.field(bridge.getClass(),"mServiceConnection").set(bridge,null);}catch(Exception ignored){}
   }
   /** Final disposal: use after auth drain, or after a confirmed remote logout. */
   void stop(){

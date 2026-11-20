@@ -1,0 +1,46 @@
+{
+  "version": "0.4.1",
+  "version_code": 11,
+  "release_channel": "prerelease",
+  "tested_on": "TCL C6K/G15 BR, Android14/API34, TTVSCore10.58.16, SmartAlexa6.13.25",
+  "apk_sha256": "06131e0619d8474413b87ceb33310a33d6861efe3719c74c36725c95a74bd235",
+  "apk_bytes": 1221573,
+  "release_certificate_sha256": "0e9e1e7ed033bd5de9a7a175c5dc9df80b04fb96dfabd1f040ec45de9ba8cd5b",
+  "fresh_build_sha256": "3f29c786580a39658c859a837b1db0db571162b4e9f01e0313def9269a87f681",
+  "fresh_build_non_signature_entries_identical": true,
+  "core_probe": {
+    "total": 64,
+    "passed": 48,
+    "blocked_preparation": 16,
+    "scope": "Isolated Java bootstrap and selected contracts on one Android14 TV; not full Alexa command qualification per APK"
+  },
+  "host_dex_order": {
+    "total": 64,
+    "passed": 64
+  },
+  "native_functional": {
+    "update_preserved_link": true,
+    "token_expiry_advanced_and_persisted": true,
+    "executor_recovery": true,
+    "cloud_recovery": true,
+    "actual_volume_and_callback": true,
+    "original_volume_restored": true,
+    "activity_opened": false
+  },
+  "standby": {
+    "seconds": 60,
+    "state": "Asleep",
+    "cloud_executor_link_persistence_retained": true,
+    "initial_wake_sender_error": "Mac unicast packet send failed: no route; broadcast was not attempted by initial sender",
+    "separate_broadcast_recovery": "Awake observed after3 broadcast UDP packets, without ADB wake key",
+    "complete_single_run_regression_finished": true,
+    "single_run_result": "Native power-off,60s Asleep with cloud/executor/link retained, UDP-only wake to Awake and healthy state after wake"
+  },
+  "pending": [
+    "Exact TCSCore10.60.03 artifact",
+    "Fresh Echo voice regression on0.4.1",
+    "New-account setup and overnight standby on0.4.1"
+  ],
+  "privacy": "Sanitized summary only; no credentials, profiles, device identifiers or vendor APKs included in source",
+  "installed_release_hash_rechecked": true
+}

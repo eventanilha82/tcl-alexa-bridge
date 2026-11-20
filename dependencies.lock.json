@@ -1,0 +1,26 @@
+[
+  {
+    "name": "dexlib2-2.5.2.jar",
+    "url": "https://repo.maven.apache.org/maven2/org/smali/dexlib2/2.5.2/dexlib2-2.5.2.jar",
+    "bytes": 1103473,
+    "sha256": "5a5c8982d8bd7d6e3bb1a0713049e3c78b719ec32b20f6b619885cec30a0dd61"
+  },
+  {
+    "name": "guava-27.1-android.jar",
+    "url": "https://repo.maven.apache.org/maven2/com/google/guava/guava/27.1-android/guava-27.1-android.jar",
+    "bytes": 2603938,
+    "sha256": "686404f2d1d4d221911f96bd627ff60dac2226a5dfa6fb8ba517073eb97ec0ef"
+  },
+  {
+    "name": "jsr305-3.0.2.jar",
+    "url": "https://repo.maven.apache.org/maven2/com/google/code/findbugs/jsr305/3.0.2/jsr305-3.0.2.jar",
+    "bytes": 19936,
+    "sha256": "766ad2a0783f2687962c8ad74ceecc38a28b9f72a2d085ee438b7813e928d0c7"
+  },
+  {
+    "name": "failureaccess-1.0.jar",
+    "url": "https://repo.maven.apache.org/maven2/com/google/guava/failureaccess/1.0/failureaccess-1.0.jar",
+    "bytes": 3727,
+    "sha256": "d084bef9cd07a8537a1753e4850a69b7e8bab1d1e22e9f3a1e4826309a7a2336"
+  }
+]

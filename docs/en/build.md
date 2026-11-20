@@ -64,7 +64,9 @@ python3 scripts/check-shareable.py
 
 Output: `build/alexa-bridge.apk`. Firmware, SmartAlexa and TTVSCore downloads are not needed to compile; they are runtime dependencies on the TV.
 
-The script compiles `app/src`, generates DEX, packages resources/assets, aligns and signs the APK. Override `BRIDGE_BUILD_TOOLS` and `BRIDGE_ANDROID_JAR` to select explicit local dependencies. No vendor APK, decompiled source or TCL key is needed for the build. The distributed profile is empty; the wizard collects and validates native identity on the device.
+On the first build, the script downloads about 3.7 MB of Java dependencies from Maven Central and checks their size and SHA-256 against `dependencies.lock.json`. Verified files are cached in `build/dependencies`. The script compiles `app/src` and those libraries, generates DEX, packages resources/assets, aligns and signs the APK. Override `BRIDGE_BUILD_TOOLS` and `BRIDGE_ANDROID_JAR` to select explicit local dependencies. No vendor APK, decompiled source or TCL key is needed for the build. The distributed profile is empty; the wizard collects and validates native identity on the device.
+
+To use an existing maintainer key stored elsewhere, set `BRIDGE_SIGNING_DIR` to the directory containing `signing.p12` and `signing-pass.txt`. Compare certificates before updating an existing installation.
 
 The first run creates `.private/signing.p12` and `.private/signing-pass.txt`. Keep both out of Git and back them up securely. Updates require the same signing key. A personal build has a different signature from the release and cannot directly update it. The installer does not automatically uninstall an existing app to bypass a signature mismatch.
 
